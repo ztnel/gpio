@@ -2,16 +2,24 @@
 
 set -e
 
-# add gpio group if not already added
-if ! grep -q gpio /etc/group; then
-    sudo groupadd -g 199 gpio
-    sudo adduser ubuntu gpio
-    echo "Added gpio group @ GID 199 and user ubuntu"
-else
-    echo "gpio group exists and is set; skipping.."
-fi
+# check for permissions
+gpio readall
 
-# set permissions for gpio to access gpiomem space
-echo "Setting gpio cli permissions for current session"
-sudo chown ubuntu.gpio /dev/gpiomem
-sudo chmod g+rw /dev/gpiomem
+gpio -g mode 18 output
+gpio -g write 18 1
+sleep 2
+gpio -g write 18 0
+sleep 2
+gpio -g write 18 1
+sleep 2
+gpio -g write 18 0
+sleep 2
+gpio -g write 18 1
+sleep 2
+gpio -g write 18 0
+sleep 2
+gpio -g write 18 1
+sleep 2
+gpio -g write 18 0
+sleep 2
+gpio -g write 18 1
