@@ -2,24 +2,24 @@
 
 set -e
 
-# check for permissions
-gpio readall
+CLK=17
+RCLK=18
 
-gpio -g mode 18 output
-gpio -g write 18 1
-sleep 2
-gpio -g write 18 0
-sleep 2
-gpio -g write 18 1
-sleep 2
-gpio -g write 18 0
-sleep 2
-gpio -g write 18 1
-sleep 2
-gpio -g write 18 0
-sleep 2
-gpio -g write 18 1
-sleep 2
-gpio -g write 18 0
-sleep 2
-gpio -g write 18 1
+gpio readall
+gpio -g mode "$CLK" in
+gpio -g mode "$RCLK" out
+clk_pulse=0
+
+while :
+do
+	if [ "$(gpio -g read $CLK)" == 1 ]; then
+		clk_pulse=$(("$clk_pulse"+1))
+        fi
+        if [ "$clk_pulse" == 7 ]; then
+                echo "Reached max"
+		clk_pulse=0
+                gpio -g write "$RCLK" 1
+	else
+		gpio -g write "$RCLK" 0
+	fi
+done
