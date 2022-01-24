@@ -18,6 +18,8 @@
 #include <string.h>
 #include "pwm/pwm.h"
 
+
+
 FILE *exec(char *cmd) {
   // execute kernel command
   FILE *fp = popen(cmd, "r");
@@ -84,6 +86,4 @@ int main(int argc, char **argv) {
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
   }
-
-
 }
