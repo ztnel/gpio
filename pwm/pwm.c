@@ -1,7 +1,7 @@
 /**
  * @file pwm.c
  * @author your name (you@domain.com)
- * @brief 
+ * @brief linux pwm driver 
  * @version 0.1
  * @date 2022-01
  * 
@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-#include "pwm/pwm.h"
+#include "pwm.h"
 
 
 
@@ -25,6 +25,7 @@ FILE *exec(char *cmd) {
   FILE *fp = popen(cmd, "r");
   if (fp == NULL) {
     printf("Failed to run command %s\n\r", cmd);
+    pclose(fp);
     exit(1);
   }
   return fp;
@@ -36,8 +37,7 @@ void get_pwm_status() {
   int tx_found = 0;
   int status;
   char indicator[] = "pwm-2chan";
-  char command[] = "sudo dtoverlay pwm-2chan";
-  while (fgets(output, sizeof(output), fd != NULL)) {
+  while (fgets(output, sizeof(output), fd) != NULL) {
     printf("%s\n\r", output);
     fflush(stdout);
     if (strstr(output, indicator) != NULL) {
@@ -45,8 +45,7 @@ void get_pwm_status() {
     }
   }
   if (tx_found == 0) {
-    fd = exec(command);
-    sleep(2);
+    fd = exec("sudo dtoverlay pwm-2chan");
   }
   status = pclose(fd);
   if (status == -1) {
@@ -67,21 +66,21 @@ int main(int argc, char **argv) {
   }
   // set PWM period
   fd = open("/sys/class/pwm/pwmchip0/pwm0/period", O_WRONLY);
-  write(fd, 10000000, 8);
+  write(fd, "10000000", 8);
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
   }
   // set PWM duty
   fd = open("/sys/class/pwm/pwmchip0/pwm0/duty_cycle", O_WRONLY);
-  write(fd, 1000000, 7);
+  write(fd, "1000000", 7);
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
   }
   // set PWM enable
   fd = open("/sys/class/pwm/pwmchip0/pwm0/enable", O_WRONLY);
-  write(fd, 1, 1);
+  write(fd, "1", 1);
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
