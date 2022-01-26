@@ -55,11 +55,12 @@ void get_pwm_status() {
 
 int main(int argc, char **argv) {
   int status;
-  get_pwm_status();
+  // get_pwm_status();
   // open pwm export for write only
   int fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
   // write a single byte to fd
   write(fd, "0", 1);
+  printf("Enbling pwmchip0\n\r");
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
@@ -67,13 +68,15 @@ int main(int argc, char **argv) {
   // set PWM period
   fd = open("/sys/class/pwm/pwmchip0/pwm0/period", O_WRONLY);
   write(fd, "10000000", 8);
+  printf("Setting PWM duty period\n\r");
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
   }
   // set PWM duty
   fd = open("/sys/class/pwm/pwmchip0/pwm0/duty_cycle", O_WRONLY);
-  write(fd, "1000000", 7);
+  write(fd, "8000000", 7);
+  printf("Setting PWM duty cycle\n\r");
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
@@ -81,6 +84,7 @@ int main(int argc, char **argv) {
   // set PWM enable
   fd = open("/sys/class/pwm/pwmchip0/pwm0/enable", O_WRONLY);
   write(fd, "1", 1);
+  printf("Enabling PWM\n\r");
   status = close(fd);
   if (status == -1) {
     printf("Error when closing file: %s\n\r", fd);
