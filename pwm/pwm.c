@@ -16,11 +16,17 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include "errors.h"
 #include "pwm.h"
 
 
-
-FILE *exec(char *cmd) {
+/**
+ * @brief Execute kernel command
+ * 
+ * @param cmd command as a string buffer
+ * @return FILE* 
+ */
+static FILE *exec(char *cmd) {
   // execute kernel command
   FILE *fp = popen(cmd, "r");
   if (fp == NULL) {
@@ -31,7 +37,96 @@ FILE *exec(char *cmd) {
   return fp;
 }
 
-void get_pwm_status() {
+/**
+ * @brief Write data to sysfs
+ * 
+ * @param path sysfs path
+ * @param buf data buffer
+ * @param buf_size data buffer size in bytes
+ * @return pwm_code 
+ */
+static pwm_code ioctl(const char* path, const void* buf, size_t buf_size) {
+  if (path == NULL || buf == NULL || buf_size == 0) {
+    printf("Invalid arg");
+    return PWM_ARG_ERROR;
+  }
+  printf("Opening path %s for write of %x with size %i\n", path, *(uint *)buf, buf_size);
+  // open path for write only
+  int fd = open(path, O_WRONLY);
+  // write buffer
+  write(fd, buf, buf_size);
+  if (close(fd) == -1) {
+    printf("Error when closing file: %d\n\r", fd);
+    return PWM_SYSFS_CLOSE_ERROR;
+  }
+  return PWM_SUCCESS;
+}
+
+/**
+ * @brief Reserve or close access to pwmchip0
+ * 
+ * @param reserve reservation flag 
+ * @return pwm_code 
+ */
+pwm_code set_export(uint8_t reserve) {
+  char buf[1];
+  memcpy(buf, (char *)&reserve, sizeof(uint8_t));
+  pwm_code status = ioctl(reserve ? EXPORT: UNEXPORT, &buf, sizeof(uint8_t));
+  if (status != 0) {
+    return status;
+  }
+  return PWM_SUCCESS;
+}
+
+/**
+ * @brief Enable/Disable pwm channel
+ * 
+ * @param enable flag for enable/disable
+ * @return pwm_code 
+ */
+pwm_code set_enable(uint8_t enable) {
+  char buf[1];
+  memcpy(buf, (char *)&enable, sizeof(uint8_t));
+  pwm_code status = ioctl(ENABLE, &buf, sizeof(uint8_t));
+  if (status != 0) {
+    return status;
+  }
+  return PWM_SUCCESS;
+}
+
+/**
+ * @brief Set the duty cycle of the pwm waveform in ns
+ * 
+ * @param duty positive pulse width in ns
+ * @return pwm_code 
+ */
+pwm_code set_duty(uint64_t duty) {
+  char buf[8];
+  memcpy(buf, (char *)&duty, sizeof(uint64_t));
+  pwm_code status = ioctl(DUTY, &buf, sizeof(uint64_t));
+  if (status != 0) {
+    return status;
+  }
+  return PWM_SUCCESS;
+}
+
+/**
+ * @brief Set the waveform pulse period in ns 
+ * 
+ * @param period pulse period in ns
+ * @return pwm_code 
+ */
+pwm_code set_period(uint64_t period) {
+  char buf[8];
+  memcpy(buf, (char *)&period, sizeof(uint64_t));
+  pwm_code status = ioctl(PERIOD, &period, sizeof(uint64_t));
+  if (status != 0) {
+    return status;
+  }
+  return PWM_SUCCESS;
+}
+
+pwm_code get_status() {
   FILE *fd = exec("sudo dtparam -l");
   char output[1024];
   int tx_found = 0;
@@ -49,44 +144,41 @@ void get_pwm_status() {
   }
   status = pclose(fd);
   if (status == -1) {
-    printf("Error when closing process %s\n\r", fd);
+    printf("Error when closing process \n\r");
   }
+  return PWM_SUCCESS;
 }
 
 int main(int argc, char **argv) {
-  int status;
-  // get_pwm_status();
-  // open pwm export for write only
-  int fd = open("/sys/class/pwm/pwmchip0/export", O_WRONLY);
-  // write a single byte to fd
-  write(fd, "0", 1);
-  printf("Enbling pwmchip0\n\r");
-  status = close(fd);
-  if (status == -1) {
-    printf("Error when closing file: %s\n\r", fd);
+  pwm_code status;
+  // enable pwmchip
+  status = set_export(1);
+  if (status != 0) {
+    printf("Error in export\n");
+    exit(1);
   }
   // set PWM period
-  fd = open("/sys/class/pwm/pwmchip0/pwm0/period", O_WRONLY);
-  write(fd, "10000000", 8);
-  printf("Setting PWM duty period\n\r");
-  status = close(fd);
-  if (status == -1) {
-    printf("Error when closing file: %s\n\r", fd);
+  status = set_period(10000000);
+  if (status != 0) {
+    printf("Error in period set\n");
+    exit(1);
   }
   // set PWM duty
-  fd = open("/sys/class/pwm/pwmchip0/pwm0/duty_cycle", O_WRONLY);
-  write(fd, "8000000", 7);
-  printf("Setting PWM duty cycle\n\r");
-  status = close(fd);
-  if (status == -1) {
-    printf("Error when closing file: %s\n\r", fd);
+  status = set_duty(2000000);
+  if (status != 0) {
+    printf("Error in duty set\n");
+    exit(1);
   }
-  // set PWM enable
-  fd = open("/sys/class/pwm/pwmchip0/pwm0/enable", O_WRONLY);
-  write(fd, "1", 1);
-  printf("Enabling PWM\n\r");
-  status = close(fd);
-  if (status == -1) {
-    printf("Error when closing file: %s\n\r", fd);
+  // enable PWM channel 
+  status = set_enable(1);
+  if (status != 0) {
+    printf("Error in enable\n");
+    exit(1);
+  }
+  // disable pwmchip 
+  status = set_export(0);
+  if (status != 0) {
+    printf("Error in enable\n");
+    exit(1);
   }
 }
