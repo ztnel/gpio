@@ -69,8 +69,9 @@ static pwm_code ioctl(const char* path, const void* buf, size_t buf_size) {
  * @return pwm_code 
  */
 pwm_code set_export(uint8_t reserve) {
-  char buf[1];
-  memcpy(buf, (char *)&reserve, sizeof(uint8_t));
+  // add an extra byte for potential terminating null
+  char buf[sizeof(uint8_t)+1];
+  sprintf(buf, "%c", reserve);
   pwm_code status = ioctl(reserve ? EXPORT: UNEXPORT, &buf, sizeof(uint8_t));
   if (status != 0) {
     return status;
@@ -85,8 +86,9 @@ pwm_code set_export(uint8_t reserve) {
  * @return pwm_code 
  */
 pwm_code set_enable(uint8_t enable) {
-  char buf[1];
-  memcpy(buf, (char *)&enable, sizeof(uint8_t));
+  // add an extra byte for potential terminating null
+  char buf[sizeof(uint8_t)+1];
+  sprintf(buf, "%c", enable);
   pwm_code status = ioctl(ENABLE, &buf, sizeof(uint8_t));
   if (status != 0) {
     return status;
@@ -101,8 +103,8 @@ pwm_code set_enable(uint8_t enable) {
  * @return pwm_code 
  */
 pwm_code set_duty(uint64_t duty) {
-  char buf[8];
-  memcpy(buf, (char *)&duty, sizeof(uint64_t));
+  char buf[sizeof(uint64_t)];
+  sprintf(buf, "%lld", duty);
   pwm_code status = ioctl(DUTY, &buf, sizeof(uint64_t));
   if (status != 0) {
     return status;
@@ -117,8 +119,8 @@ pwm_code set_duty(uint64_t duty) {
  * @return pwm_code 
  */
 pwm_code set_period(uint64_t period) {
-  char buf[8];
-  memcpy(buf, (char *)&period, sizeof(uint64_t));
+  char buf[sizeof(uint64_t)];
+  sprintf(buf, "%lld", period);
   pwm_code status = ioctl(PERIOD, &period, sizeof(uint64_t));
   if (status != 0) {
     return status;
@@ -164,7 +166,7 @@ int main(int argc, char **argv) {
     exit(1);
   }
   // set PWM duty
-  status = set_duty(2000000);
+  status = set_duty(5000000);
   if (status != 0) {
     printf("Error in duty set\n");
     exit(1);
