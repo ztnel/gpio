@@ -8,7 +8,6 @@
  * @copyright Copyright © 2022 Christian Sargusingh
  * 
  */
-#define _DEFAULT_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -149,38 +148,4 @@ pwm_code get_status() {
     printf("Error when closing process \n\r");
   }
   return PWM_SUCCESS;
-}
-
-int main(int argc, char **argv) {
-  pwm_code status;
-  // enable pwmchip
-  status = set_export(1);
-  if (status != 0) {
-    printf("Error in export\n");
-    exit(1);
-  }
-  // set PWM period
-  status = set_period(10000000);
-  if (status != 0) {
-    printf("Error in period set\n");
-    exit(1);
-  }
-  // set PWM duty
-  status = set_duty(5000000);
-  if (status != 0) {
-    printf("Error in duty set\n");
-    exit(1);
-  }
-  // enable PWM channel 
-  status = set_enable(1);
-  if (status != 0) {
-    printf("Error in enable\n");
-    exit(1);
-  }
-  // disable pwmchip 
-  status = set_export(0);
-  if (status != 0) {
-    printf("Error in enable\n");
-    exit(1);
-  }
 }
