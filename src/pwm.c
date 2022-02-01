@@ -15,8 +15,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-#include "errors.h"
-#include "pwm.h"
+#include "static/errors.h"
+#include "static/pwm.h"
 
 
 /**
