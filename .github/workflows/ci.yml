@@ -10,6 +10,22 @@ jobs:
       run:
         shell: bash
     steps:
+      - uses: actions/checkout@v2
+      - name: Configure CMake
+        run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build .
+      - name: Upload static lib
+        uses: actions/upload-artifact@v2
+        with:
+          name: lib_gpio.a
+          path: ${{runner.workspace}}/build/*.a*
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     - uses: actions/checkout@v2
     - name: install dependancies
       run: python3 -m pip install gcovr
@@ -18,11 +34,6 @@ jobs:
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
-    - name: Upload static lib
-      uses: actions/upload-artifact@v2
-      with:
-        name: lib_gpio.a
-        path: ${{runner.workspace}}/build/*.a*
     - name: Test
       working-directory: ${{runner.workspace}}/build
       run: GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ctest -V
@@ -39,3 +50,14 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         files: ${{runner.workspace}}/build/cov.xml
+  cpplint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - name: install cppcheck
+        run: sudo apt install cppcheck -y
+      - name: Execute cppcheck
+        run: cppcheck src include
