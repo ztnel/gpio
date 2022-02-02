@@ -11,6 +11,8 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v2
+    - name: install dependancies
+      run: python3 -m pip install gcovr
     - name: Configure CMake
       run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
     - name: Build
