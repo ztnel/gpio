@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -67,9 +68,10 @@ static pwm_code ioctl(const char* path, const void* buf, size_t buf_size) {
  * @param reserve reservation flag 
  * @return pwm_code 
  */
-pwm_code set_export(uint8_t reserve) {
+pwm_code set_export(bool reserve) {
   // add an extra byte for potential terminating null
-  char buf[sizeof(uint8_t)+1];
+  char buf[sizeof(bool)+1];
+  if (reserve)
   sprintf(buf, "%c", reserve);
   pwm_code status = ioctl(reserve ? EXPORT: UNEXPORT, &buf, sizeof(uint8_t));
   if (status != 0) {
@@ -84,9 +86,9 @@ pwm_code set_export(uint8_t reserve) {
  * @param enable flag for enable/disable
  * @return pwm_code 
  */
-pwm_code set_enable(uint8_t enable) {
+pwm_code set_enable(bool enable) {
   // add an extra byte for potential terminating null
-  char buf[sizeof(uint8_t)+1];
+  char buf[sizeof(bool)+1];
   sprintf(buf, "%c", enable);
   pwm_code status = ioctl(ENABLE, &buf, sizeof(uint8_t));
   if (status != 0) {

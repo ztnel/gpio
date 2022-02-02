@@ -23,7 +23,7 @@ static FILE *exec(char *cmd);
 static pwm_code ioctl(const char* path, const void* buf, size_t buf_size);
 
 pwm_code get_status();
-pwm_code set_export(uint8_t reserve);
+pwm_code set_export(bool reserve);
+pwm_code set_enable(bool enable);
 pwm_code set_duty(uint64_t duty);
-pwm_code set_enable(uint8_t enable);
 pwm_code set_period(uint64_t period);
