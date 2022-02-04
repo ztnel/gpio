@@ -1,12 +1,13 @@
+include_directories("${PROJECT_SOURCE_DIR}/build/_deps/fff-src")
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 message(STATUS "Running test configuration")
 set(SOURCES 
-    ${PROJECT_SOURCE_DIR}/src/pwm.c
+  ${PROJECT_SOURCE_DIR}/src/pwm.c
 )
 
 set(TESTS
-    ${PROJECT_SOURCE_DIR}/tests/test_pwm.cpp
+  ${PROJECT_SOURCE_DIR}/tests/test_pwm.cpp
 )
 
 foreach(file ${TESTS})
@@ -16,6 +17,6 @@ foreach(file ${TESTS})
     ${SOURCES}
     ${file}
     "${PROJECT_SOURCE_DIR}/tests/main.cpp")
-  target_link_libraries("${name}" gtest_main gmock_main)
+  target_link_libraries("${name}" gtest_main) 
   add_test(NAME ${name} COMMAND "${name}")
 endforeach()

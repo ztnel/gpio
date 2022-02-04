@@ -1,21 +1,15 @@
 #include <gtest/gtest.h>
-#include "mocks/pwm_mock.h"
+#include <fff.h>
 
 extern "C" {
 #include "static/pwm.h"
 }
 
+DEFINE_FFF_GLOBALS;
+FAKE_VALUE_FUNC3(pwm_code, ioctl, const char*, const void*, size_t);
 
-using ::testing::_;
 
-namespace {
-  class TestPwm : public TestFixture {
-    public:
-      TestPwm() {};
-  };
-
-  TEST_F(TestPwm, ExportReturnsSuccess) {
-    EXPECT_CALL(*mock_pwm, ioctl(_,_,_));
-    set_export(true);
-  }
-} //namespace
+TEST(TestPwm, ExportReturnsSuccess) {
+  set_export(true);
+  // ASSERT_EQ(ioctl.call_count, 1);
+}
