@@ -5,16 +5,17 @@ extern "C" {
 #include "static/pwm.h"
 }
 
+
+using ::testing::_;
+
 namespace {
-  class TestPwm {
-    protected:
-      void SetUp() {};
-      void TearDown() {};
+  class TestPwm : public TestFixture {
+    public:
+      TestPwm() {};
   };
-  using ::testing::_;
-  TEST(TestPwm, ExportReturnsSuccess) {
-    MockPwm mock_pwm;
-    EXPECT_CALL(mock_pwm, ioctl(_,_,_));
-    ASSERT_EQ(set_export(true), 0);
+
+  TEST_F(TestPwm, ExportReturnsSuccess) {
+    EXPECT_CALL(*mock_pwm, ioctl(_,_,_));
+    set_export(true);
   }
 } //namespace
