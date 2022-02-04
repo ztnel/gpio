@@ -5,3 +5,20 @@
 Modified: 2022-01
 
 Lightweight rpi gpio peripheral drivers.
+
+## Build
+Build the library
+```bash
+mkdir build
+cd build
+cmake ..
+make -j
+```
+## Development
+For test build tools pass `BUILD_TYPE=TEST`:
+```bash
+mkdir build
+cd build
+cmake .. -DBUILD_TYPE=TEST
+make -j
+```
