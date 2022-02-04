@@ -71,7 +71,6 @@ static pwm_code ioctl(const char* path, const void* buf, size_t buf_size) {
 pwm_code set_export(bool reserve) {
   // add an extra byte for potential terminating null
   char buf[sizeof(bool)+1];
-  if (reserve)
   sprintf(buf, "%c", reserve);
   pwm_code status = ioctl(reserve ? EXPORT: UNEXPORT, &buf, sizeof(uint8_t));
   if (status != 0) {
