@@ -1,5 +1,7 @@
-include_directories("${PROJECT_SOURCE_DIR}/build/_deps/fff-src")
-include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories(
+  "${PROJECT_SOURCE_DIR}/include"
+  # "${PROJECT_SOURCE_DIR}/build/_deps/fff-src" # TEMP
+)
 
 message(STATUS "Running test configuration")
 set(SOURCES 

@@ -50,7 +50,7 @@ static pwm_code ioctl(const char* path, const void* buf, size_t buf_size) {
     printf("Invalid arg");
     return PWM_ARG_ERROR;
   }
-  printf("Opening path %s for write of %x with size %i\n", path, *(uint *)buf, buf_size);
+  printf("Opening path %s for write of %x with size %i\n", path, buf, buf_size);
   // open path for write only
   int fd = open(path, O_WRONLY);
   // write buffer
