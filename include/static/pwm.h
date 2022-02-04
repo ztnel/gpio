@@ -9,7 +9,6 @@
  * 
  */
 
-#include <stdio.h>
 #include "errors.h"
 
 // constant path definitions
@@ -20,7 +19,6 @@ static const char DUTY[] = "/sys/class/pwm/pwmchip0/pwm0/duty_cycle";
 static const char ENABLE[] = "/sys/class/pwm/pwmchip0/pwm0/enable";
 
 static FILE *exec(char *cmd);
-static pwm_code ioctl(const char* path, const void* buf, size_t buf_size);
 
 pwm_code get_status();
 pwm_code set_export(bool reserve);

@@ -1,14 +1,17 @@
-extern "C" {
-  #include "static/pwm.h"
-}
 
 #include <gtest/gtest.h>
 #include "fff.h"
 
+extern "C" {
+  #include "static/sysfs.h"
+  #include "static/pwm.h"
+}
+
+
 DEFINE_FFF_GLOBALS;
 FAKE_VALUE_FUNC(pwm_code, ioctl, const char*, const void*, size_t);
 
-class TestPwm : public ::testing::Test {
+class TestPwm : public testing::Test {
   public:
     void SetUp() {
       RESET_FAKE(ioctl);
