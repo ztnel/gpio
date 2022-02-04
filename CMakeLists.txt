@@ -26,11 +26,6 @@ FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
 )
-# FetchContent_Declare(
-#   fff
-#   GIT_REPOSITORY https://github.com/meekrosoft/fff
-#   GIT_TAG 7e09f07e5b262b1cc826189dc5057379e40ce886
-# )
 
 FetchContent_MakeAvailable(googletest)
 
