@@ -15,7 +15,7 @@ install(TARGETS lib_gpio
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-if(BUILD_TYPE MATCHES "TEST")
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
   # Setup coverage with gcov
   include(tests/CodeCoverage.cmake)
   append_coverage_compiler_flags()
@@ -29,10 +29,20 @@ if(BUILD_TYPE MATCHES "TEST")
   include(FetchContent)
   FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        703bd9caab50b139428cea1aaff9974ebee5742e # release-1.10.0
   )
-
-  FetchContent_MakeAvailable(googletest)
+  FetchContent_Declare(
+    fff 
+    GIT_REPOSITORY https://github.com/meekrosoft/fff
+    GIT_TAG 7e09f07e5b262b1cc826189dc5057379e40ce886
+  )
+  FetchContent_MakeAvailable(googletest fff)
+  # remove gtest confliction
+  if(NOT fff_POPULATED)
+    FetchContent_Populate(fff)
+    file(REMOVE_RECURSE ${fff_SOURCE_DIR}/gtest)
+  endif()
 
   enable_testing()
   add_subdirectory(tests)
