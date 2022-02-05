@@ -1,6 +1,12 @@
+add_library(fff INTERFACE)
+target_include_directories(
+  fff
+  INTERFACE
+  ${PROJECT_SOURCE_DIR}/build/_deps/fff-src
+)
+
 include_directories(
   "${PROJECT_SOURCE_DIR}/include"
-  # "${PROJECT_SOURCE_DIR}/build/_deps/fff-src" # TEMP
 )
 
 message(STATUS "Running test configuration")
@@ -19,6 +25,6 @@ foreach(file ${TESTS})
     ${SOURCES}
     ${file}
     "${PROJECT_SOURCE_DIR}/tests/main.cpp")
-  target_link_libraries("${name}" gtest_main) 
+  target_link_libraries("${name}" gtest_main fff) 
   add_test(NAME ${name} COMMAND "${name}")
 endforeach()
