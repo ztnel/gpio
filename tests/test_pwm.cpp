@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "fff.h"
+#include <fff.h>
 
 extern "C" {
   #include "static/sysfs.h"
