@@ -9,16 +9,14 @@ Lightweight rpi gpio peripheral drivers.
 ## Build
 Build the library
 ```bash
-mkdir build
+cmake -S . -B build
 cd build
-cmake ..
 make -j
 ```
 ## Development
 For test build tools pass `CMAKE_BUILD_TYPE=Debug`:
 ```bash
-mkdir build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
 make -j
 ```
