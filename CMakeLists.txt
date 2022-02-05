@@ -17,7 +17,7 @@ install(TARGETS lib_gpio
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   # Setup coverage with gcov
-  include(tests/CodeCoverage.cmake)
+  include(tests/modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES "${PROJECT_SOURCE_DIR}/tests/*" "${PROJECT_SOURCE_DIR}/main.c" "${PROJECT_SOURCE_DIR}/build/*")
   setup_target_for_coverage_gcovr_xml(
