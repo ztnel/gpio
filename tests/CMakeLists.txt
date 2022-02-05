@@ -1,3 +1,4 @@
+message(STATUS "Adding fff dependancy")
 add_library(fff INTERFACE)
 target_include_directories(
   fff
@@ -6,7 +7,7 @@ target_include_directories(
 )
 
 include_directories(
-  "${PROJECT_SOURCE_DIR}/include"
+  ${PROJECT_SOURCE_DIR}/include
 )
 
 message(STATUS "Running test configuration")
@@ -21,10 +22,12 @@ set(TESTS
 foreach(file ${TESTS})
   set(name)
   get_filename_component(name ${file} NAME_WE)
-  add_executable("${name}"
+  add_executable(
+    ${name}
     ${SOURCES}
     ${file}
-    "${PROJECT_SOURCE_DIR}/tests/main.cpp")
-  target_link_libraries("${name}" gtest_main fff) 
-  add_test(NAME ${name} COMMAND "${name}")
+    ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+  target_link_libraries(${name} gtest_main fff) 
+  add_test(NAME ${name} COMMAND ${name})
 endforeach()
+
