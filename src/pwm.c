@@ -80,7 +80,7 @@ pwm_code set_enable(bool enable) {
  */
 pwm_code set_duty(uint64_t duty) {
   char buf[sizeof(uint64_t)];
-  sprintf(buf, "%lld", duty);
+  sprintf(buf, "%ld", duty);
   pwm_code status = ioctl(DUTY, &buf, sizeof(uint64_t));
   if (status != 0) {
     return status;
@@ -96,7 +96,7 @@ pwm_code set_duty(uint64_t duty) {
  */
 pwm_code set_period(uint64_t period) {
   char buf[sizeof(uint64_t)];
-  sprintf(buf, "%lld", period);
+  sprintf(buf, "%ld", period);
   pwm_code status = ioctl(PERIOD, &period, sizeof(uint64_t));
   if (status != 0) {
     return status;
