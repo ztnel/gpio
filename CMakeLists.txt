@@ -35,9 +35,10 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
   FetchContent_Declare(
     fff 
     GIT_REPOSITORY https://github.com/meekrosoft/fff
-    GIT_TAG 7e09f07e5b262b1cc826189dc5057379e40ce886
+    GIT_TAG v1.1 
   )
-  FetchContent_MakeAvailable(googletest fff)
+  FetchContent_MakeAvailable(googletest) 
+  FetchContent_GetProperties(fff)
   # remove gtest confliction
   if(NOT fff_POPULATED)
     FetchContent_Populate(fff)
