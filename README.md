@@ -15,10 +15,10 @@ cmake ..
 make -j
 ```
 ## Development
-For test build tools pass `BUILD_TYPE=TEST`:
+For test build tools pass `CMAKE_BUILD_TYPE=Debug`:
 ```bash
 mkdir build
 cd build
-cmake .. -DBUILD_TYPE=TEST
+cmake .. -DCMAKE_BUILD_TYPE=Debug
 make -j
 ```
