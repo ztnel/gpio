@@ -32,6 +32,8 @@ jobs:
         run: python3 -m pip install gcovr
       - name: Configure CMake
         run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+      - name: ========= DEBUG ===========
+        run: sudo apt install tree -y; tree
       - name: Build
         working-directory: ${{runner.workspace}}/build
         run: cmake --build .
