@@ -22,23 +22,6 @@
 
 
 /**
- * @brief Execute kernel command
- * 
- * @param cmd command as a string buffer
- * @return FILE* 
- */
-static FILE *exec(char *cmd) {
-  // execute kernel command
-  FILE *fp = popen(cmd, "r");
-  if (fp == NULL) {
-    printf("Failed to run command %s\n\r", cmd);
-    pclose(fp);
-    exit(1);
-  }
-  return fp;
-}
-
-/**
  * @brief Reserve or close access to pwmchip0
  * 
  * @param reserve reservation flag 
@@ -98,27 +81,4 @@ pwm_code set_period(uint64_t period) {
   char buf[sizeof(uint64_t)];
   sprintf(buf, "%ld", period);
   return ioctl(PERIOD_PATH, buf, sizeof(uint64_t));
-}
-
-pwm_code get_status() {
-  FILE *fd = exec("sudo dtparam -l");
-  char output[1024];
-  int tx_found = 0;
-  int status;
-  char indicator[] = "pwm-2chan";
-  while (fgets(output, sizeof(output), fd) != NULL) {
-    printf("%s\n\r", output);
-    fflush(stdout);
-    if (strstr(output, indicator) != NULL) {
-      tx_found = 1;
-    }
-  }
-  if (tx_found == 0) {
-    fd = exec("sudo dtoverlay pwm-2chan");
-  }
-  status = pclose(fd);
-  if (status == -1) {
-    printf("Error when closing process \n\r");
-  }
-  return PWM_SUCCESS;
 }

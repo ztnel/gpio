@@ -12,9 +12,6 @@
 #include "errors.h"
 
 
-static FILE *exec(char *cmd);
-
-pwm_code get_status();
 pwm_code set_export(bool reserve);
 pwm_code set_enable(bool enable);
 pwm_code set_duty(uint64_t duty);
