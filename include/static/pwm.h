@@ -11,12 +11,6 @@
 
 #include "errors.h"
 
-// constant path definitions
-static const char EXPORT[] = "/sys/class/pwm/pwmchip0/export";
-static const char UNEXPORT[] = "/sys/class/pwm/pwmchip0/unexport";
-static const char PERIOD[] = "/sys/class/pwm/pwmchip0/pwm0/period";
-static const char DUTY[] = "/sys/class/pwm/pwmchip0/pwm0/duty_cycle";
-static const char ENABLE[] = "/sys/class/pwm/pwmchip0/pwm0/enable";
 
 static FILE *exec(char *cmd);
 
