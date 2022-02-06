@@ -43,3 +43,27 @@ pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
   }
   return PWM_SUCCESS;
 }
+
+/**
+ * @brief Build a string repr of integer dynamically
+ * 
+ * @param value target integer
+ * @return char* 
+ */
+void int64_to_str(uint64_t value, char* buf, size_t* size) {
+  // get length of string size
+  int len = snprintf(NULL, 0, "%lld", value);
+  // +1 allocation for null terminator '\0'
+  *size = len + 1;
+  buf = malloc(*size);
+  snprintf(buf, *size, "%lld", value);
+}
+
+/**
+ * @brief 
+ * 
+ * @param str_alloc 
+ */
+void free_buffer(char* buf) {
+  free(buf);
+}
