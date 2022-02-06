@@ -79,14 +79,12 @@ pwm_code set_enable(bool enable) {
  * @return pwm_code 
  */
 pwm_code set_duty(uint64_t duty) {
-  // get length of string size
-  int len = snprintf(NULL, 0, "%lld", duty);
-  // +1 allocation for null terminator '\0'
-  size_t size = len + 1;
-  char* buf = malloc(size);
-  snprintf(buf, size, "%lld", duty);
+  char* buf = NULL;
+  size_t size;
+  int64_to_str(duty, buf, &size);
+  printf("Buffer: %s Size: %d\n", buf, size);
   pwm_code status = ioctl(DUTY_PATH, buf, size);
-  free(buf);
+  free_buffer(buf);
   return status;
 }
 
