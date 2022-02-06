@@ -27,7 +27,7 @@
  * @param buf_size data buffer size in bytes
  * @return pwm_code 
  */
-pwm_code ioctl(const char* path, const void* buf, size_t buf_size) {
+pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
   if (path == NULL || buf == NULL || buf_size == 0) {
     printf("Invalid arg");
     return PWM_ARG_ERROR;
