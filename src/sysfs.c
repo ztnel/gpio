@@ -29,7 +29,7 @@
  */
 pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
   if (path == NULL || buf == NULL || buf_size == 0) {
-    printf("Invalid arg");
+    printf("Invalid arg\n\r");
     return PWM_ARG_ERROR;
   }
   printf("Opening path %s for write of %x with size %i\n", path, buf, buf_size);
