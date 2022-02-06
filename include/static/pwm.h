@@ -9,8 +9,8 @@
  * 
  */
 
+#include <stdbool.h>
 #include "errors.h"
-
 
 pwm_code set_export(bool reserve);
 pwm_code set_enable(bool enable);
