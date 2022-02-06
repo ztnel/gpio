@@ -20,7 +20,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lib_gpio.a
-          path: $GITHUB_WORKSPACE/build/*.a*
+          path: ${{runner.workspace}}/gpio/build/*.a*
   test:
     runs-on: ubuntu-latest
     defaults:
@@ -45,14 +45,14 @@ jobs:
         if: failure()
         with:
           name: results_xml
-          path: $GITHUB_WORKSPACE/build/results/**/*.xml
+          path: ${{runner.workspace}}/gpio/build/results/**/*.xml
       - name: gcov
         working-directory: build
         run: make cov
       - name: codecov push
         uses: codecov/codecov-action@v1
         with:
-          files: $GITHUB_WORKSPACE/build/cov.xml
+          files: ${{runner.workspace}}/gpio/build/cov.xml
   cppcheck:
     runs-on: ubuntu-latest
     defaults:
