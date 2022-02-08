@@ -10,7 +10,7 @@ extern "C" {
 
 DEFINE_FFF_GLOBALS;
 FAKE_VALUE_FUNC(pwm_code, ioctl, const char*, const char*, size_t);
-FAKE_VOID_FUNC(int64_to_str, uint64_t, char*, size_t*);
+FAKE_VALUE_FUNC(char*, int64_to_str, uint64_t, size_t*);
 FAKE_VOID_FUNC(free_buffer, char*);
 
 class TestPwm : public testing::Test {
