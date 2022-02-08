@@ -1,19 +1,27 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(lib_gpio LANGUAGES CXX C VERSION "1.0.0" DESCRIPTION "Lightweight Drivers for RPi GPIO")
+project(gpio LANGUAGES CXX C VERSION "1.0.0" DESCRIPTION "Lightweight Drivers for RPi GPIO")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(lib_gpio STATIC src/pwm.c src/sysfs.c)
-set_target_properties(lib_gpio PROPERTIES VERSION ${PROJECT_VERSION} PREFIX "" SUFFIX ".a.${PROJECT_VERSION}")
-target_include_directories(lib_gpio PUBLIC ${PROJECT_SOURCE_DIR}/include)
-include(GNUInstallDirs)
-install(TARGETS lib_gpio
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# set log level through cli
+if(NOT GPIO_LOG_LEVEL)
+  set(GPIO_LOG_LEVEL "ERROR")
+endif()
+
+add_library(
+  gpio-static
+  STATIC
+  src/pwm.c
+  src/sysfs.c
 )
+target_compile_definitions(gpio-static PRIVATE GPIO_LOG_LEVEL=${GPIO_LOG_LEVEL})
+set_target_properties(gpio-static PROPERTIES VERSION ${PROJECT_VERSION})
+target_include_directories(gpio-static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_options(gpio-static PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wformat -Wundef -fno-common)
+set(GPIO_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   # Setup coverage with gcov
