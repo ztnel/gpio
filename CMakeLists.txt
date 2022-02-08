@@ -6,6 +6,17 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 
+# Detect if the project is being build within a project or standalone.
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  set(STANDALONE true)
+  # Configure the build path
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+else()
+  set(STANDALONE false)
+endif()
+
 # set log level through cli
 if(NOT GPIO_LOG_LEVEL)
   set(GPIO_LOG_LEVEL "ERROR")
@@ -21,7 +32,10 @@ target_compile_definitions(gpio-static PRIVATE GPIO_LOG_LEVEL=${GPIO_LOG_LEVEL})
 set_target_properties(gpio-static PROPERTIES VERSION ${PROJECT_VERSION})
 target_include_directories(gpio-static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_options(gpio-static PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wformat -Wundef -fno-common)
-set(GPIO_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+
+if (NOT ${STANDALONE})
+  set(GPIO_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   # Setup coverage with gcov
