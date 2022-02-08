@@ -50,13 +50,14 @@ pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
  * @param value target integer
  * @return char* 
  */
-void int64_to_str(uint64_t value, char* buf, size_t* size) {
+char* int64_to_str(uint64_t value, size_t* size) {
   // get length of string size
   int len = snprintf(NULL, 0, "%lld", value);
   // +1 allocation for null terminator '\0'
   *size = len + 1;
-  buf = malloc(*size);
+  char *buf = malloc(*size);
   snprintf(buf, *size, "%lld", value);
+  return buf;
 }
 
 /**

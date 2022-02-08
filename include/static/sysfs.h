@@ -22,5 +22,5 @@ static const char ENABLE_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/enable";
 
 
 pwm_code ioctl(const char* path, const char* buf, size_t buf_size);
-void int64_to_str(uint64_t value, char *buf, size_t *size);
+char* int64_to_str(uint64_t value, size_t *size);
 void free_buffer(char* buf);

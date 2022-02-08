@@ -62,9 +62,8 @@ pwm_code set_enable(bool enable) {
  * @return pwm_code 
  */
 pwm_code set_duty(uint64_t duty) {
-  char* buf = NULL;
   size_t size;
-  int64_to_str(duty, buf, &size);
+  char *buf = int64_to_str(duty, &size);
   printf("Buffer: %s Size: %d\n", buf, size);
   pwm_code status = ioctl(DUTY_PATH, buf, size);
   free_buffer(buf);
