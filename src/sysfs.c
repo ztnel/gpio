@@ -11,11 +11,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <merase.h>
 #include "static/sysfs.h"
 #include "static/errors.h"
 
@@ -29,16 +28,16 @@
  */
 pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
   if (path == NULL || buf == NULL || buf_size == 0) {
-    printf("Invalid arg\n\r");
+    error("Invalid arg");
     return PWM_ARG_ERROR;
   }
-  printf("Opening path %s for write of %x with size %i\n", path, buf, buf_size);
+  trace("Opening path %s for write of %x with size %i", path, buf, buf_size);
   // open path for write only
   int fd = open(path, O_WRONLY);
   // write buffer
   write(fd, buf, buf_size);
   if (close(fd) == -1) {
-    printf("Error when closing file: %d\n\r", fd);
+    error("Error when closing file: %d", fd);
     return PWM_SYSFS_CLOSE_ERROR;
   }
   return PWM_SUCCESS;
@@ -67,4 +66,5 @@ char* int64_to_str(uint64_t value, size_t* size) {
  */
 void free_buffer(char* buf) {
   free(buf);
+  info("String buffer freed");
 }
