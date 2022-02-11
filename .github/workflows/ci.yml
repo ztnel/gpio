@@ -1,7 +1,16 @@
 ---
 name: ci 
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+    branches:
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - master
 
 jobs:
   build:
@@ -32,8 +41,6 @@ jobs:
         run: python3 -m pip install gcovr
       - name: Configure CMake
         run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_BUILD_TYPE=Debug
-      - name: ========= DEBUG ===========
-        run: tree
       - name: Build
         working-directory: build
         run: cmake --build .
