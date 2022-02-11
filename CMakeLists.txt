@@ -1,6 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(gpio LANGUAGES CXX C VERSION "1.0.0" DESCRIPTION "Lightweight Drivers for RPi GPIO")
+project(
+  gpio
+  LANGUAGES CXX C
+  VERSION "1.0.0"
+  DESCRIPTION "Lightweight Drivers for RPi GPIO"
+)
+
+# cmake build guard
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(
+    FATAL_ERROR
+      "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there."
+  )
+endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
@@ -22,12 +35,23 @@ if(NOT GPIO_LOG_LEVEL)
   set(GPIO_LOG_LEVEL "ERROR")
 endif()
 
+# Add merase library
+include(FetchContent)
+message(STATUS "Fetching static dependancies")
+FetchContent_Declare(
+  merase-static
+  GIT_REPOSITORY https://github.com/ztnel/merase
+  GIT_TAG v0.1.0
+)
+FetchContent_MakeAvailable(merase-static)
+
 add_library(
   gpio-static
   STATIC
   src/pwm.c
   src/sysfs.c
 )
+target_link_libraries(gpio-static PRIVATE merase-static)
 target_compile_definitions(gpio-static PRIVATE GPIO_LOG_LEVEL=${GPIO_LOG_LEVEL})
 set_target_properties(gpio-static PROPERTIES VERSION ${PROJECT_VERSION})
 target_include_directories(gpio-static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -38,17 +62,19 @@ if (NOT ${STANDALONE})
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  message(STATUS "Building ${PROJECT_NAME} with debug flag")
+  message(STATUS "Configuring code coverage")
   # Setup coverage with gcov
-  include(tests/modules/CodeCoverage.cmake)
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+  include(cmake/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES "${PROJECT_SOURCE_DIR}/tests/*" "${PROJECT_SOURCE_DIR}/main.c" "${PROJECT_SOURCE_DIR}/build/*")
   setup_target_for_coverage_gcovr_xml(
-      NAME cov
-      EXECUTABLE GTEST_COLOR=1 ctest -V
+    NAME cov
+    EXECUTABLE GTEST_COLOR=1 ctest -V
   )
-
+  message(STATUS "Fetching unittest dependancies")
   # setup gtest and fff
-  include(FetchContent)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
