@@ -39,11 +39,11 @@ endif()
 include(FetchContent)
 message(STATUS "Fetching static dependancies")
 FetchContent_Declare(
-  merase-static
+  merase
   GIT_REPOSITORY https://github.com/ztnel/merase
-  GIT_TAG v0.1.0
+  GIT_TAG v0.1.1
 )
-FetchContent_MakeAvailable(merase-static)
+FetchContent_MakeAvailable(merase)
 
 add_library(
   gpio-static
@@ -51,6 +51,7 @@ add_library(
   src/pwm.c
   src/sysfs.c
 )
+include_directories(${MERASE_INCLUDE})
 target_link_libraries(gpio-static PRIVATE merase-static)
 target_compile_definitions(gpio-static PRIVATE GPIO_LOG_LEVEL=${GPIO_LOG_LEVEL})
 set_target_properties(gpio-static PROPERTIES VERSION ${PROJECT_VERSION})
@@ -61,7 +62,7 @@ if (NOT ${STANDALONE})
   set(GPIO_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
 endif()
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
+if(CMAKE_BUILD_TYPE MATCHES "Debug" AND ${STANDALONE})
   message(STATUS "Building ${PROJECT_NAME} with debug flag")
   message(STATUS "Configuring code coverage")
   # Setup coverage with gcov
