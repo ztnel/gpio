@@ -30,12 +30,12 @@ void usage() {
     "Example PWM Driver.\n"
     "Usage:\n"
     "  ex-pwm\n"
-    "  ex-pwm -d <ns> -p <ns>\n"
+    "  ex-pwm -d <ns> -p <percent>\n"
     "  ex-pwm -h | --help\n\n"
     "Options:\n"
-    "  -h --help    Show this screen.\n"
-    "  -d <ns>      Duty cycle in nanoseconds.\n"
-    "  -p <ns>      Period in nanoseconds.\n"
+    "  -h --help      Show this screen.\n"
+    "  -d <percent>   Positive duty cycle as percentage.\n"
+    "  -p <ns>        Period in nanoseconds.\n"
   );
 }
 
@@ -74,18 +74,13 @@ int main(int argc, char *argv[]) {
     usage();
     exit(0);
   }
+  pwm_init();
   // set export
   status = set_export(true);
   if (status != 0) {
     shutdown();
   }
-  // set duty
-  status = set_duty(duty);
-  if (status != 0) {
-    shutdown();
-  }
-  // set period
-  set_period(period);
+  status = set_pulse(period, duty);
   if (status != 0) {
     shutdown();
   }
