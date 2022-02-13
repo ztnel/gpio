@@ -27,7 +27,7 @@ foreach(file ${TESTS})
     ${SOURCES}
     ${file}
     ${PROJECT_SOURCE_DIR}/tests/main.cpp)
-  target_link_libraries(${name} gtest_main fff merase-static) 
+  target_link_libraries(${name} gtest_main fff) 
   add_test(NAME ${name} COMMAND ${name})
 endforeach()
 
