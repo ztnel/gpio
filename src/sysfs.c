@@ -18,6 +18,7 @@
 #include "sysfs.h"
 #include "errors.h"
 
+
 /**
  * @brief Write data to sysfs
  * 
@@ -47,22 +48,23 @@ pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
  * @brief Build a string repr of integer dynamically
  * 
  * @param value target integer
+ * @param size size of buffer
  * @return char* 
  */
 char* int64_to_str(uint64_t value, size_t* size) {
   // get length of string size
   int len = snprintf(NULL, 0, "%lld", value);
   // +1 allocation for null terminator '\0'
-  *size = len + 1;
+  *size = (size_t)len + 1;
   char *buf = malloc(*size);
   snprintf(buf, *size, "%lld", value);
   return buf;
 }
 
 /**
- * @brief 
+ * @brief Free the string pointer memory for conversion
  * 
- * @param str_alloc 
+ * @param str_alloc malloc pointer for int->str conversion
  */
 void free_buffer(char* buf) {
   free(buf);
