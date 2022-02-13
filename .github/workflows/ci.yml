@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Configure CMake
-        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build
+        run: cmake -S ${{github.workspace}} -B ${{github.workspace}}/build
       - name: Build
         working-directory: build
         run: cmake --build .
@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lib_gpio.a
-          path: ${{runner.workspace}}/gpio/build/*.a*
+          path: ${{github.workspace}}/build/*.a*
   test:
     runs-on: ubuntu-latest
     defaults:
@@ -40,7 +40,7 @@ jobs:
       - name: install dependancies
         run: python3 -m pip install gcovr
       - name: Configure CMake
-        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -S ${{github.workspace}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
       - name: Build
         working-directory: build
         run: cmake --build .
@@ -52,14 +52,14 @@ jobs:
         if: failure()
         with:
           name: results_xml
-          path: ${{runner.workspace}}/gpio/build/results/**/*.xml
+          path: ${{github.workspace}}/build/results/**/*.xml
       - name: gcov
         working-directory: build
         run: make cov
       - name: codecov push
         uses: codecov/codecov-action@v1
         with:
-          files: ${{runner.workspace}}/gpio/build/cov.xml
+          files: ${{github.workspace}}/build/cov.xml
   cppcheck:
     runs-on: ubuntu-latest
     defaults:
