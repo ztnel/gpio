@@ -3,8 +3,8 @@
 #include <fff.h>
 
 extern "C" {
-  #include "static/sysfs.h"
-  #include "static/pwm.h"
+  #include "sysfs.h"
+  #include "pwm.h"
 }
 
 

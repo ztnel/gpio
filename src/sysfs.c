@@ -15,8 +15,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <merase.h>
-#include "static/sysfs.h"
-#include "static/errors.h"
+#include "sysfs.h"
+#include "errors.h"
 
 /**
  * @brief Write data to sysfs

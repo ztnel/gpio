@@ -14,9 +14,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <merase.h>
-#include "static/errors.h"
-#include "static/pwm.h"
-#include "static/sysfs.h"
+#include "errors.h"
+#include "pwm.h"
+#include "sysfs.h"
 
 
 /**
