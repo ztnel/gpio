@@ -11,7 +11,7 @@ cmake ..
 make -j
 ```
 
-Run the example driver cli
+Run the example driver cli:
 ```bash
-./bin/example_pwm_driver 500000 100000
+./bin/ex-pwm -d 8000000 -p 10000000
 ```
