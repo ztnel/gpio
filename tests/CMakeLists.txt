@@ -13,10 +13,12 @@ include_directories(
 message(STATUS "Running test configuration")
 set(SOURCES 
   ${PROJECT_SOURCE_DIR}/src/pwm.c
+  ${PROJECT_SOURCE_DIR}/src/sysfs.c
 )
 
 set(TESTS
   ${PROJECT_SOURCE_DIR}/tests/test_pwm.cpp
+  ${PROJECT_SOURCE_DIR}/tests/test_sysfs.cpp
 )
 
 foreach(file ${TESTS})
@@ -26,7 +28,7 @@ foreach(file ${TESTS})
     ${name}
     ${SOURCES}
     ${file}
-    ${PROJECT_SOURCE_DIR}/tests/main.cpp)
+    "${PROJECT_SOURCE_DIR}/tests/main.cpp")
   target_link_libraries(${name} gtest_main fff) 
   add_test(NAME ${name} COMMAND ${name})
 endforeach()
