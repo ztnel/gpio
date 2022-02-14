@@ -11,10 +11,6 @@ include_directories(
 )
 
 message(STATUS "Running test configuration")
-set(SOURCES 
-  ${PROJECT_SOURCE_DIR}/src/pwm.c
-  ${PROJECT_SOURCE_DIR}/src/sysfs.c
-)
 
 set(TESTS
   ${PROJECT_SOURCE_DIR}/tests/test_pwm.cpp
@@ -26,10 +22,10 @@ foreach(file ${TESTS})
   get_filename_component(name ${file} NAME_WE)
   add_executable(
     ${name}
-    ${SOURCES}
     ${file}
-    "${PROJECT_SOURCE_DIR}/tests/main.cpp")
-  target_link_libraries(${name} gtest_main fff) 
+    ${PROJECT_SOURCE_DIR}/tests/main.cpp
+  )
+  target_link_libraries(${name} gtest_main fff gpio-static) 
   add_test(NAME ${name} COMMAND ${name})
 endforeach()
 
