@@ -1,15 +1,24 @@
+/**
+ * @file test_pwm.cpp
+ * @author your name (you@domain.com)
+ * @brief unittests for pwm module
+ * @version 0.1
+ * @date 2022-02
+ * 
+ * @copyright Copyright © 2022 Christian Sargusingh
+ * 
+ */
+
 extern "C" {
-  #include "merase.h"
-  #include "sysfs.h"
+  #include <merase.h>
   #include "pwm.h"
 }
 
 #include <gtest/gtest.h>
 #include <fff.h>
 
-
 DEFINE_FFF_GLOBALS;
-FAKE_VALUE_FUNC(pwm_code, ioctl, const char*, const char*, size_t);
+FAKE_VALUE_FUNC3(int, ioctl, const char*, const char*, size_t);
 FAKE_VALUE_FUNC2(char*, int64_to_str, uint64_t, size_t*);
 FAKE_VOID_FUNC1(free_buffer, char*);
 FAKE_VOID_FUNC1(logger_set_level, Level);
@@ -40,12 +49,12 @@ TEST_F(TestPwm, SetExportReturn) {
 
 TEST_F(TestPwm, SetExportTrue) {
   set_export(true);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, EXPORT_PATH), 0);
+  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/export"), 0);
 }
 
 TEST_F(TestPwm, SetExportFalse) {
   set_export(false);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, UNEXPORT_PATH), 0);
+  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/unexport"), 0);
 }
 
 TEST_F(TestPwm, SetEnableReturn) {
@@ -74,19 +83,20 @@ TEST_F(TestPwm, SetDutyReturn) {
 
 TEST_F(TestPwm, SetDutyIoctlArgs) {
   set_duty(200000);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, DUTY_PATH), 0);
+  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/pwm0/duty_cycle"), 0);
 }
 
 TEST_F(TestPwm, SetPeriodReturn) {
   pwm_code mock_ret = PWM_GENERAL_ERROR;
   ioctl_fake.return_val = mock_ret;
   int result = set_period(1000000);
+  ASSERT_EQ(int64_to_str_fake.call_count, 1);
   ASSERT_EQ(result, mock_ret);
 }
 
 TEST_F(TestPwm, SetPeriodIoctlArgs) {
   set_period(200000);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, PERIOD_PATH), 0);
+  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/pwm0/period"), 0);
 }
 
 TEST_F(TestPwm, PwmInit) {
