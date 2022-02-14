@@ -9,13 +9,16 @@
  * 
  */
 
+
+
+#include <fff.h>
+#include <gtest/gtest.h>
+
 extern "C" {
   #include <merase.h>
   #include "pwm.h"
+  #include "sysfs.h"
 }
-
-#include <gtest/gtest.h>
-#include <fff.h>
 
 DEFINE_FFF_GLOBALS;
 FAKE_VALUE_FUNC3(int, ioctl, const char*, const char*, size_t);
