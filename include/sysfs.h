@@ -28,4 +28,4 @@ int ioctl(const char* path, const char* buf, size_t buf_size);
 char* int64_to_str(uint64_t value, size_t *size);
 void free_buffer(char* buf);
 
-#endif // SYSFS_H_
+#endif  // SYSFS_H_
