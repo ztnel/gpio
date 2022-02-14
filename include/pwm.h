@@ -22,4 +22,4 @@ pwm_code set_period(uint64_t period);
 pwm_code set_pulse(uint64_t period, uint8_t duty);
 void pwm_init();
 
-#endif // PWM_H_
+#endif  // PWM_H_
