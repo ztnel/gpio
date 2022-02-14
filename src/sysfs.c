@@ -16,7 +16,6 @@
 #include <string.h>
 #include <merase.h>
 #include "sysfs.h"
-#include "errors.h"
 
 
 /**
@@ -25,12 +24,12 @@
  * @param path sysfs path
  * @param buf data buffer
  * @param buf_size data buffer size in bytes
- * @return pwm_code 
+ * @return int 
  */
-pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
+int ioctl(const char* path, const char* buf, size_t buf_size) {
   if (path == NULL || buf == NULL || buf_size == 0) {
     error("Invalid arg");
-    return PWM_ARG_ERROR;
+    return 1;
   }
   trace("Opening path %s for write of %x with size %i", path, buf, buf_size);
   // open path for write only
@@ -39,9 +38,9 @@ pwm_code ioctl(const char* path, const char* buf, size_t buf_size) {
   write(fd, buf, buf_size);
   if (close(fd) == -1) {
     error("Error when closing file: %d", fd);
-    return PWM_SYSFS_CLOSE_ERROR;
+    return 1;
   }
-  return PWM_SUCCESS;
+  return 0;
 }
 
 /**
