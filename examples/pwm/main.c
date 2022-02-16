@@ -50,19 +50,15 @@ void usage() {
 pwm_code set_pulse(uint64_t period, uint8_t duty) {
   pwm_code status;
   if (duty > 100) {
-    error("Invalid argument for duty: %i", duty);
     return PWM_ARG_ERROR;
   }
   uint64_t _duty = period * (int)duty/100;
-  trace("Computed duty: %lld", _duty);
   status = set_period(period);
   if (status != 0) {
-    error("Error occurred while setting PWM period with %lld", period);
     return status;
   }
   status = set_duty(_duty);
   if (status != 0) {
-    error("Error occurred while setting PWM duty with: %lld", _duty);
     return status;
   }
   return PWM_SUCCESS;
