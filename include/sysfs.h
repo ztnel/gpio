@@ -24,7 +24,8 @@ static const char DUTY_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/duty_cycle";
 static const char ENABLE_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/enable";
 
 
-int ioctl(const char *path, const char *buf, size_t buf_size);
+char *rctl(const char *path);
+int wctl(const char *path, const char *buf, size_t buf_size);
 char *int64_to_str(uint64_t value, size_t *size);
 void free_buffer(char *buf);
 FILE *exec_linux_cmd(char *cmd);
