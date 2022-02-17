@@ -70,5 +70,7 @@ int main(int argc, char *argv[]) {
   while (fgets(output, sizeof(output), fp) != NULL) {
     printf("%s", output);
   }
+  char *duty = rctl(DUTY_PATH, 8);
+  info("Duty Cycle: %s", duty);
   return 0;
 }
