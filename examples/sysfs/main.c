@@ -65,6 +65,10 @@ int main(int argc, char *argv[]) {
     usage();
     exit(0);
   }
-  printf("%s", exec_linux_cmd(cmd));
+  char output[1024];
+  FILE *fp = exec_linux_cmd(cmd);
+  while (fgets(output, sizeof(output), fp) != NULL) {
+    printf("%s", output);
+  }
   return 0;
 }
