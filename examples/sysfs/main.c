@@ -36,7 +36,7 @@ void usage() {
 int main(int argc, char *argv[]) {
   int c, status, errflg = 0;
   char *cmd = NULL;
-  logger_set_level(TRACE);
+  merase_set_level(TRACE);
   while ((c = getopt(argc, argv, OPTSTR)) != -1) {
     switch (c) {
       case 'h':

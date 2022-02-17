@@ -99,7 +99,6 @@ int main(int argc, char *argv[]) {
     usage();
     exit(0);
   }
-  pwm_init();
   // set export
   status = set_export(true);
   if (status != 0) {
