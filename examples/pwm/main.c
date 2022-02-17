@@ -65,9 +65,9 @@ pwm_code set_pulse(uint64_t period, uint8_t duty) {
 }
 
 int main(int argc, char *argv[]) {
-  int c, status, errflg;
-  uint64_t duty;
-  uint64_t period;
+  int c, status, errflg = 0;
+  uint64_t duty = 0;
+  uint64_t period = 0;
   while ((c = getopt(argc, argv, OPTSTR)) != -1) {
     switch (c) {
       case 'h':
