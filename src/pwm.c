@@ -88,11 +88,3 @@ pwm_code set_period(uint64_t period) {
   trace("Set pwm period returned status: %d", status);
   return status;
 }
-
-/**
- * @brief Initialize the pwm api
- * 
- */
-void pwm_init() {
-  logger_set_level(TRACE);
-}
