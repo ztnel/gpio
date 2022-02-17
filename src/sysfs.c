@@ -41,7 +41,7 @@ char *rctl(const char *path, size_t size) {
     error("Error while opening %s", path);
     goto _cleanup;
   }
-  size_t sz = read(fd, buf, size);
+  ssize_t sz = read(fd, buf, size);
   info("Successful read of %d bytes: %s", sz, buf);
 
 _cleanup:
@@ -77,7 +77,8 @@ int wctl(const char *path, const char *buf, size_t buf_size) {
   write(fd, buf, buf_size);
   if (close(fd) == -1) {
     error("Error when closing file: %d", fd);
-    goto ;
+    status = 1;
+    goto _cleanup;
   }
   info("Successful write of %d bytes: %s", buf_size, buf);
   status = 0;
