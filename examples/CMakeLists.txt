@@ -11,7 +11,7 @@ message(STATUS "Fetching static dependancies")
 FetchContent_Declare(
   merase
   GIT_REPOSITORY https://github.com/ztnel/merase
-  GIT_TAG v0.1.4
+  GIT_TAG v0.1.5
 )
 FetchContent_MakeAvailable(merase)
 
