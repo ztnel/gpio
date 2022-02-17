@@ -26,7 +26,7 @@
  * @param buf_size data buffer size in bytes
  * @return int 
  */
-int ioctl(const char* path, const char* buf, size_t buf_size) {
+int ioctl(const char *path, const char *buf, size_t buf_size) {
   if (path == NULL || buf == NULL || buf_size == 0) {
     error("Invalid arg");
     return 1;
@@ -50,7 +50,7 @@ int ioctl(const char* path, const char* buf, size_t buf_size) {
  * @param size size of buffer
  * @return char* 
  */
-char* int64_to_str(uint64_t value, size_t* size) {
+char *int64_to_str(uint64_t value, size_t *size) {
   // get length of string size
   int len = snprintf(NULL, 0, "%lld", value);
   // +1 allocation for null terminator '\0'
@@ -65,7 +65,23 @@ char* int64_to_str(uint64_t value, size_t* size) {
  * 
  * @param str_alloc malloc pointer for int->str conversion
  */
-void free_buffer(char* buf) {
+void free_buffer(char *buf) {
   free(buf);
   info("String buffer freed");
+}
+
+/**
+ * @brief Execute linux command and capture output
+ * 
+ * @param cmd 
+ * @return char* 
+ */
+FILE *exec_linux_cmd(char *cmd) {
+  char bufline[1024];
+  FILE *fp = popen(cmd, "r");
+  if (fp == NULL) {
+    error("Command %s failed to execute", cmd);
+    exit(EXIT_FAILURE);
+  }
+  return fp;
 }
