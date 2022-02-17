@@ -15,32 +15,76 @@
 #include <fcntl.h>
 #include <string.h>
 #include <merase.h>
+#include <pthread.h>
 #include "sysfs.h"
 
 
+static pthread_mutex_t s_mtx;
+
 /**
- * @brief Write data to sysfs
+ * @brief Thread safe file I/O sysfs read
+ * 
+ * @param path read path
+ * @param size read bytes
+ * @return char* 
+ */
+char *rctl(const char *path, size_t size) {
+  char *buf = (char *)malloc(size);
+  if (path == NULL) {
+    error("Path cannot be null");
+    goto _return;
+  }
+  trace("Opening path %s for read", path);
+  pthread_mutex_lock(&s_mtx);
+  int fd = open(path, O_RDONLY);
+  if (fd < 0) {
+    error("Error while opening %s", path);
+    goto _cleanup;
+  }
+  size_t sz = read(fd, buf, size);
+  info("Successful read of %d bytes: %s", sz, buf);
+
+_cleanup:
+  pthread_mutex_unlock(&s_mtx);
+_return:
+  return buf;
+}
+
+/**
+ * @brief Thread safe I/O sysfs write
  * 
  * @param path sysfs path
  * @param buf data buffer
  * @param buf_size data buffer size in bytes
  * @return int 
  */
-int ioctl(const char *path, const char *buf, size_t buf_size) {
+int wctl(const char *path, const char *buf, size_t buf_size) {
+  int status;
   if (path == NULL || buf == NULL || buf_size == 0) {
-    error("Invalid arg");
-    return 1;
+    error("Invalid argument");
+    goto _cleanup;
   }
   trace("Opening path %s for write of %x with size %i", path, buf, buf_size);
+  pthread_mutex_lock(&s_mtx);
   // open path for write only
   int fd = open(path, O_WRONLY);
+  if (fd < 0) {
+    error("Error while opening %s", path);
+    status = 1;
+    goto _cleanup;
+  }
   // write buffer
   write(fd, buf, buf_size);
   if (close(fd) == -1) {
     error("Error when closing file: %d", fd);
-    return 1;
+    goto ;
   }
-  return 0;
+  info("Successful write of %d bytes: %s", buf_size, buf);
+  status = 0;
+
+_cleanup:
+  pthread_mutex_unlock(&s_mtx);
+  return status;
 }
 
 /**
@@ -67,7 +111,7 @@ char *int64_to_str(uint64_t value, size_t *size) {
  */
 void free_buffer(char *buf) {
   free(buf);
-  info("String buffer freed");
+  info("Buffer freed");
 }
 
 /**
@@ -77,7 +121,6 @@ void free_buffer(char *buf) {
  * @return char* 
  */
 FILE *exec_linux_cmd(char *cmd) {
-  char bufline[1024];
   FILE *fp = popen(cmd, "r");
   if (fp == NULL) {
     error("Command %s failed to execute", cmd);
