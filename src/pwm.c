@@ -29,10 +29,10 @@ pwm_code set_export(bool reserve) {
   pwm_code status;
   size_t size = sizeof(uint8_t);
   if (reserve) {
-    status = ioctl(EXPORT_PATH, "1", size);
+    status = wctl(EXPORT_PATH, "1", size);
     trace("pwm export returned status: %d", status);
   } else {
-    status = ioctl(UNEXPORT_PATH, "1", size);
+    status = wctl(UNEXPORT_PATH, "1", size);
     trace("pwm unexport returned status: %d", status);
   }
   return status;
@@ -48,10 +48,10 @@ pwm_code set_enable(bool enable) {
   pwm_code status;
   size_t size = sizeof(uint8_t);
   if (enable) {
-    status = ioctl(ENABLE_PATH, "1", size);
+    status = wctl(ENABLE_PATH, "1", size);
     trace("Set pwm enable returned status: %d", status);
   } else {
-    status = ioctl(ENABLE_PATH, "0", size);
+    status = wctl(ENABLE_PATH, "0", size);
     trace("Set pwm disable returned status: %d", status);
   }
   return status;
@@ -67,7 +67,7 @@ pwm_code set_duty(uint64_t duty) {
   size_t size;
   char *buf = int64_to_str(duty, &size);
   info("Buffer: %s Size: %d\n", buf, size);
-  pwm_code status = ioctl(DUTY_PATH, buf, size);
+  pwm_code status = wctl(DUTY_PATH, buf, size);
   free_buffer(buf);
   trace("Set pwm duty returned status: %d", status);
   return status;
@@ -83,7 +83,7 @@ pwm_code set_period(uint64_t period) {
   size_t size;
   char *buf = int64_to_str(period, &size);
   info("Buffer: %s Size: %d\n", buf, size);
-  pwm_code status = ioctl(PERIOD_PATH, buf, size);
+  pwm_code status = wctl(PERIOD_PATH, buf, size);
   free_buffer(buf);
   trace("Set pwm period returned status: %d", status);
   return status;
