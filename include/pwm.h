@@ -29,14 +29,15 @@ struct pwm_iface {
   uint8_t channel;
   uint64_t duty;
   uint64_t period;
-  pwm_polarity polarity;
-  pwm_channel enable;
+  enum pwm_polarity polarity;
+  enum pwm_channel enable;
 }; 
 
-pwm_code pwm_set_export(bool reserve);
-pwm_code pwm_set_enable(bool enable);
-pwm_code pwm_set_duty(uint64_t duty);
-pwm_code pwm_set_period(uint64_t period);
-pwm_code pwm_set_pulse(uint64_t period, uint8_t duty);
+void pwm_init();
+pwm_status pwm_set_export(bool reserve);
+pwm_status pwm_set_enable(bool enable);
+pwm_status pwm_set_duty(uint64_t duty);
+pwm_status pwm_set_period(uint64_t period);
+pwm_status pwm_set_pulse(uint64_t period, uint8_t duty);
 
 #endif  // PWM_H_
