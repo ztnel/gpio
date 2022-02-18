@@ -38,12 +38,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install dependancies
-        run: python3 -m pip install gcovr
+        run: 
+          python3 -m pip install gcovr
       - name: Configure CMake
-        run: cmake -S ${{github.workspace}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+        run: CC=gcc-8 cmake -S ${{github.workspace}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
       - name: Build
         working-directory: build
-        run: cmake --build .
+        run: CC=gcc-8 cmake --build .
       - name: Test
         working-directory: build
         run: GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ctest -V
@@ -55,7 +56,7 @@ jobs:
           path: ${{github.workspace}}/build/results/**/*.xml
       - name: gcov
         working-directory: build
-        run: make cov
+        run: CC=gcc-8 make cov
       - name: codecov push
         uses: codecov/codecov-action@v1
         with:
