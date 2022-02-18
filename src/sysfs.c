@@ -61,7 +61,7 @@ int wctl(const char *path, const char *buf, size_t buf_size) {
   int status;
   if (path == NULL || buf == NULL || buf_size == 0) {
     error("Invalid argument");
-    goto _cleanup;
+    return EXIT_FAILURE;
   }
   trace("Opening path %s for write of %x with size %i", path, buf, buf_size);
   pthread_mutex_lock(&s_mtx);
@@ -69,18 +69,18 @@ int wctl(const char *path, const char *buf, size_t buf_size) {
   int fd = open(path, O_WRONLY);
   if (fd < 0) {
     error("Error while opening %s", path);
-    status = 1;
+    status = EXIT_FAILURE;
     goto _cleanup;
   }
   // write buffer
   write(fd, buf, buf_size);
   if (close(fd) == -1) {
     error("Error when closing file: %d", fd);
-    status = 1;
+    status = EXIT_FAILURE;
     goto _cleanup;
   }
   info("Successful write of %d bytes: %s", buf_size, buf);
-  status = 0;
+  status = EXIT_SUCCESS;
 
 _cleanup:
   pthread_mutex_unlock(&s_mtx);
