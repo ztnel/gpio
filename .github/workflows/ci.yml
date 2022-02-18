@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install dependancies
-        run: python3 -m pip install gcovr
+        run: python3 -m pip install gcovr && sudo apt install tree
       - name: Configure CMake
         run: cmake -S ${{github.workspace}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
       - name: Build
@@ -56,6 +56,11 @@ jobs:
       - name: gcov
         working-directory: build
         run: make cov
+      - name: debug
+        working-directory: build
+        run: |
+          tree
+          cat /home/runner/work/gpio/gpio/build/tests/CMakeFiles/test_sysfs.dir/test_sysfs.cpp.gcda
       - name: codecov push
         uses: codecov/codecov-action@v1
         with:
