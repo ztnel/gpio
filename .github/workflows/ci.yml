@@ -60,6 +60,8 @@ jobs:
         working-directory: build
         run: |
           tree
+          ls -la /home/runner/work/gpio/gpio/build/tests/CMakeFiles/test_sysfs.dir/
+          whoami
           cat /home/runner/work/gpio/gpio/build/tests/CMakeFiles/test_sysfs.dir/test_sysfs.cpp.gcda
       - name: codecov push
         uses: codecov/codecov-action@v1
