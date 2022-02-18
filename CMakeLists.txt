@@ -74,7 +74,12 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug" AND ${STANDALONE})
   FetchContent_MakeAvailable(cmake)
   include(${CMAKE_BINARY_DIR}/_deps/cmake-src/CodeCoverage.cmake)
   append_coverage_compiler_flags()
-  set(COVERAGE_EXCLUDES "${PROJECT_SOURCE_DIR}/tests/*" "${PROJECT_SOURCE_DIR}/main.c" "${PROJECT_SOURCE_DIR}/build/*")
+  set(
+    COVERAGE_EXCLUDES
+    "${PROJECT_SOURCE_DIR}/tests/*"
+    "${PROJECT_SOURCE_DIR}/main.c"
+    "${PROJECT_SOURCE_DIR}/build/_deps/*"
+  )
   setup_target_for_coverage_gcovr_xml(
     NAME cov
     EXECUTABLE GTEST_COLOR=1 ctest -V
