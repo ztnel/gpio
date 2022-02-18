@@ -18,6 +18,29 @@
 #include "pwm.h"
 #include "sysfs.h"
 
+static pwm_iface pwm = {
+};
+
+void pwm_init() {
+  pwm_set_export(true);
+  pwm_read_state();
+}
+
+pwm_code pwm_read_state() {
+  char *buf = rctl(DUTY_PATH, 8);
+  pwm->duty = atoi(buf);
+  free_buffer(buf);
+  char *buf = rctl(PERIOD_PATH, 8);
+  pwm->period = atoi(buf);
+  free_buffer(buf);
+  char *buf = rctl(, 8);
+  if (strcmp(buf, "normal") == 0)
+    pwm->polarity = NORMAL;
+  else
+    pwm->polarity = INVERSE;
+  free_buffer(buf);
+
+}
 
 /**
  * @brief Reserve or close access to pwmchip0
@@ -25,7 +48,7 @@
  * @param reserve reservation flag 
  * @return pwm_code 
  */
-pwm_code set_export(bool reserve) {
+pwm_code pwm_set_export(bool reserve) {
   pwm_code status;
   size_t size = sizeof(uint8_t);
   if (reserve) {
@@ -44,7 +67,7 @@ pwm_code set_export(bool reserve) {
  * @param enable flag for enable/disable
  * @return pwm_code 
  */
-pwm_code set_enable(bool enable) {
+pwm_code pwm_set_enable(bool enable) {
   pwm_code status;
   size_t size = sizeof(uint8_t);
   if (enable) {
@@ -63,7 +86,7 @@ pwm_code set_enable(bool enable) {
  * @param duty positive pulse width in ns
  * @return pwm_code 
  */
-pwm_code set_duty(uint64_t duty) {
+pwm_code pwm_set_duty(uint64_t duty) {
   size_t size;
   char *buf = int64_to_str(duty, &size);
   info("Buffer: %s Size: %d\n", buf, size);
@@ -79,7 +102,7 @@ pwm_code set_duty(uint64_t duty) {
  * @param period pulse period in nanoseconds
  * @return pwm_code 
  */
-pwm_code set_period(uint64_t period) {
+pwm_code pwm_set_period(uint64_t period) {
   size_t size;
   char *buf = int64_to_str(period, &size);
   info("Buffer: %s Size: %d\n", buf, size);
