@@ -21,88 +21,68 @@ extern "C" {
 }
 
 DEFINE_FFF_GLOBALS;
-FAKE_VALUE_FUNC3(int, ioctl, const char*, const char*, size_t);
-FAKE_VALUE_FUNC2(char*, int64_to_str, uint64_t, size_t*);
+FAKE_VALUE_FUNC2(char *, rctl, const char *, size_t);
+FAKE_VALUE_FUNC3(int, wctl, const char *, const char *, size_t);
+FAKE_VALUE_FUNC2(char *, int64_to_str, uint64_t, size_t *);
 FAKE_VOID_FUNC1(free_buffer, char*);
-FAKE_VOID_FUNC1(logger_set_level, Level);
-FAKE_VOID_FUNC_VARARG(_trace, const char*, ...);
-FAKE_VOID_FUNC_VARARG(_error, const char*, ...);
-FAKE_VOID_FUNC_VARARG(_warning, const char*, ...);
-FAKE_VOID_FUNC_VARARG(_critical, const char*, ...);
-FAKE_VOID_FUNC_VARARG(_info, const char*, ...);
+FAKE_VOID_FUNC_VARARG(merase_log, enum Level, const char *, int, const char *, ...);
 
 class TestPwm : public testing::Test {
   public:
     void SetUp() {
-      RESET_FAKE(ioctl);
+      RESET_FAKE(wctl);
+      RESET_FAKE(rctl);
       RESET_FAKE(int64_to_str);
       RESET_FAKE(free_buffer);
-      RESET_FAKE(logger_set_level)
       FFF_RESET_HISTORY();
     }
 };
 
-TEST_F(TestPwm, SetExportReturn) {
-  pwm_code mock_ret = PWM_GENERAL_ERROR;
-  ioctl_fake.return_val = mock_ret;
-  int result = set_export(true);
-  ASSERT_EQ(result, mock_ret);
-  ASSERT_EQ(ioctl_fake.call_count, 1);
+TEST_F(TestPwm, set_export_true) {
+  wctl_fake.return_val = PWM_SUCCESS;
+  pwm_status status = pwm_set_export(true);
+  ASSERT_EQ(strcmp(wctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/export"), 0);
+  ASSERT_EQ(status, PWM_SUCCESS);
 }
 
-TEST_F(TestPwm, SetExportTrue) {
-  set_export(true);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/export"), 0);
+TEST_F(TestPwm, set_export_false) {
+  wctl_fake.return_val = PWM_GENERAL_ERROR;
+  pwm_status status = pwm_set_export(false);
+  ASSERT_EQ(strcmp(wctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/unexport"), 0);
+  ASSERT_EQ(status, PWM_GENERAL_ERROR);
 }
 
-TEST_F(TestPwm, SetExportFalse) {
-  set_export(false);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/unexport"), 0);
+TEST_F(TestPwm, set_enable_true) {
+  wctl_fake.return_val = PWM_SUCCESS;
+  pwm_status status = pwm_set_enable(true);
+  ASSERT_EQ(strcmp(wctl_fake.arg1_val, "1"), 0);
+  ASSERT_EQ(status, PWM_SUCCESS);
 }
 
-TEST_F(TestPwm, SetEnableReturn) {
-  pwm_code mock_ret = PWM_GENERAL_ERROR;
-  ioctl_fake.return_val = mock_ret;
-  int result = set_enable(true);
-  ASSERT_EQ(result, mock_ret);
+TEST_F(TestPwm, set_enable_false) {
+  wctl_fake.return_val = PWM_GENERAL_ERROR;
+  pwm_status status = pwm_set_enable(false);
+  ASSERT_EQ(strcmp(wctl_fake.arg1_val, "0"), 0);
+  ASSERT_EQ(status, PWM_GENERAL_ERROR);
 }
 
-TEST_F(TestPwm, SetEnableTrue) {
-  set_enable(true);
-  ASSERT_EQ(strcmp(ioctl_fake.arg1_val, "1"), 0);
+TEST_F(TestPwm, set_duty) {
+  wctl_fake.return_val = PWM_SUCCESS;
+  pwm_status status = pwm_set_duty(200000);
+  ASSERT_EQ(strcmp(wctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/pwm0/duty_cycle"), 0);
+  ASSERT_EQ(status, PWM_SUCCESS);
 }
 
-TEST_F(TestPwm, SetEnableFalse) {
-  set_enable(false);
-  ASSERT_EQ(strcmp(ioctl_fake.arg1_val, "0"), 0);
-}
-
-TEST_F(TestPwm, SetDutyReturn) {
-  pwm_code mock_ret = PWM_GENERAL_ERROR;
-  ioctl_fake.return_val = mock_ret;
-  int result = set_duty(1000000);
-  ASSERT_EQ(result, mock_ret);
-}
-
-TEST_F(TestPwm, SetDutyIoctlArgs) {
-  set_duty(200000);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/pwm0/duty_cycle"), 0);
-}
-
-TEST_F(TestPwm, SetPeriodReturn) {
-  pwm_code mock_ret = PWM_GENERAL_ERROR;
-  ioctl_fake.return_val = mock_ret;
-  int result = set_period(1000000);
+TEST_F(TestPwm, set_period) {
+  wctl_fake.return_val = PWM_SUCCESS;
+  pwm_status status = pwm_set_period(1000000);
+  ASSERT_EQ(strcmp(wctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/pwm0/period"), 0);
   ASSERT_EQ(int64_to_str_fake.call_count, 1);
-  ASSERT_EQ(result, mock_ret);
+  ASSERT_EQ(status, PWM_SUCCESS);
 }
 
-TEST_F(TestPwm, SetPeriodIoctlArgs) {
-  set_period(200000);
-  ASSERT_EQ(strcmp(ioctl_fake.arg0_val, "/sys/class/pwm/pwmchip0/pwm0/period"), 0);
-}
-
-TEST_F(TestPwm, PwmInit) {
+TEST_F(TestPwm, pwm_init) {
   pwm_init();
-  ASSERT_EQ(logger_set_level_fake.call_count, 1);
+  ASSERT_EQ(wctl_fake.call_count, 1);
+  ASSERT_EQ(rctl_fake.call_count, 4);
 }
