@@ -39,12 +39,12 @@ char *rctl(const char *path, size_t size) {
   int fd = open(path, O_RDONLY);
   if (fd < 0) {
     error("Error while opening %s", path);
-    goto _cleanup;
+    pthread_mutex_unlock(&s_mtx);
+    return buf;
   }
   ssize_t sz = read(fd, buf, size);
   info("Successful read of %d bytes: %s", sz, buf);
 
-_cleanup:
   pthread_mutex_unlock(&s_mtx);
   return buf;
 }
@@ -70,19 +70,19 @@ int wctl(const char *path, const char *buf, size_t buf_size) {
   if (fd < 0) {
     error("Error while opening %s", path);
     status = EXIT_FAILURE;
-    goto _cleanup;
+    pthread_mutex_unlock(&s_mtx);
+    return status;
   }
   // write buffer
   write(fd, buf, buf_size);
   if (close(fd) == -1) {
     error("Error when closing file: %d", fd);
     status = EXIT_FAILURE;
-    goto _cleanup;
+    pthread_mutex_unlock(&s_mtx);
+    return status;
   }
   info("Successful write of %d bytes: %s", buf_size, buf);
   status = EXIT_SUCCESS;
-
-_cleanup:
   pthread_mutex_unlock(&s_mtx);
   return status;
 }
