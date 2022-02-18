@@ -54,16 +54,23 @@ void pwm_init() {
  */
 static void _initialize_state() {
   char *buf;
+  char *ep;
 
   buf = rctl(_DUTY_PATH, 8);
   if (buf != NULL) {
-    pwm.duty = atoll(buf);
+    uint64_t duty = strtoull(buf, &ep, 10);
+    if (!*ep) {
+      pwm.duty = duty;
+    }
     free_buffer(buf);
   }
 
   buf = rctl(_PERIOD_PATH, 8);
   if (buf != NULL) {
-    pwm.period = atoll(buf);
+    uint64_t period = strtoull(buf, &ep, 10);
+    if (!*ep) {
+      pwm.period = period;
+    }
     free_buffer(buf);
   }
 

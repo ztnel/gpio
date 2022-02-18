@@ -69,6 +69,7 @@ int main(int argc, char *argv[]) {
   int c, status, errflg = 0;
   uint64_t duty = 0;
   uint64_t period = 0;
+  char *ep;
   merase_set_level(TRACE);
   while ((c = getopt(argc, argv, OPTSTR)) != -1) {
     switch (c) {
@@ -76,10 +77,10 @@ int main(int argc, char *argv[]) {
         usage();
         exit(0);
       case 'd':
-        duty = atoll(optarg);
+        duty = strtoull(optarg, &ep, 10);
         break;
       case 'p' :
-        period = atoll(optarg);
+        period = strtoull(optarg, &ep, 10);
         break;
       case ':':
         fprintf(stderr, "-%c without argument\n", optopt);
