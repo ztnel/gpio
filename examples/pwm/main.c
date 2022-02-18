@@ -21,8 +21,8 @@ void usage();
 pwm_code set_pulse(uint64_t period, uint8_t duty);
 
 int shutdown() {
-  set_enable(false);
-  set_export(false);
+  pwm_set_enable(false);
+  pwm_set_export(false);
   return 0;
 }
 
@@ -100,16 +100,16 @@ int main(int argc, char *argv[]) {
     exit(0);
   }
   // set export
-  status = set_export(true);
+  status = pwm_set_export(true);
   if (status != 0) {
     shutdown();
   }
-  status = set_pulse(period, duty);
+  status = pwm_set_pulse(period, duty);
   if (status != 0) {
     shutdown();
   }
   // set enable
-  set_enable(true);
+  pwm_set_enable(true);
   if (status != 0) {
     shutdown();
   }
