@@ -31,21 +31,19 @@ jobs:
           name: libgpio-static.a
           path: ${{github.workspace}}/build/bin/
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     defaults:
       run:
         shell: bash
     steps:
       - uses: actions/checkout@v2
       - name: install dependancies
-        run: |
-          sudo apt install gcc-8
-          python3 -m pip install gcovr
+        run: python3 -m pip install gcovr
       - name: Configure CMake
-        run: CC=gcc-8 cmake -S ${{github.workspace}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -S ${{github.workspace}} -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug
       - name: Build
         working-directory: build
-        run: CC=gcc-8 cmake --build .
+        run: cmake --build .
       - name: Test
         working-directory: build
         run: GTEST_OUTPUT=xml:results/ GTEST_COLOR=1 ctest -V
@@ -57,7 +55,7 @@ jobs:
           path: ${{github.workspace}}/build/results/**/*.xml
       - name: gcov
         working-directory: build
-        run: CC=gcc-8 make cov
+        run: make cov
       - name: codecov push
         uses: codecov/codecov-action@v1
         with:
