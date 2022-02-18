@@ -56,24 +56,28 @@ static void _initialize_state() {
   char *buf;
 
   buf = rctl(_DUTY_PATH, 8);
-  if (buf != NULL)
+  if (buf != NULL) {
     pwm.duty = atoll(buf);
     free_buffer(buf);
+  }
 
   buf = rctl(_PERIOD_PATH, 8);
-  if (buf != NULL)
+  if (buf != NULL) {
     pwm.period = atoll(buf);
     free_buffer(buf);
+  }
 
   buf = rctl(_ENABLE_PATH, 5);
-  if (buf != NULL)
+  if (buf != NULL) {
     pwm.enable = (strcmp(buf, "1") == 0) ? true : false;
     free_buffer(buf);
+  }
 
   buf = rctl(_POLARITY_PATH, 7);
-  if (buf != NULL)
+  if (buf != NULL) {
     pwm.polarity = (strcmp(buf, "normal") == 0) ? NORMAL : INVERSE;
     free_buffer(buf);
+  }
 }
 
 /**
