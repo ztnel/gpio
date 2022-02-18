@@ -29,11 +29,11 @@ static pthread_mutex_t s_mtx;
  * @return char* 
  */
 char *rctl(const char *path, size_t size) {
-  char *buf = (char *)malloc(size);
   if (path == NULL) {
     error("Path cannot be null");
-    goto _return;
+    return NULL;
   }
+  char *buf = (char *)malloc(size);
   trace("Opening path %s for read", path);
   pthread_mutex_lock(&s_mtx);
   int fd = open(path, O_RDONLY);
@@ -46,7 +46,6 @@ char *rctl(const char *path, size_t size) {
 
 _cleanup:
   pthread_mutex_unlock(&s_mtx);
-_return:
   return buf;
 }
 
