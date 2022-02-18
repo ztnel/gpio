@@ -16,14 +16,6 @@
 #include <stdio.h>
 #include "errors.h"
 
-// constant path definitions
-static const char EXPORT_PATH[] = "/sys/class/pwm/pwmchip0/export";
-static const char UNEXPORT_PATH[] = "/sys/class/pwm/pwmchip0/unexport";
-static const char PERIOD_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/period";
-static const char DUTY_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/duty_cycle";
-static const char ENABLE_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/enable";
-static const char POLARITY[] = "/sys/class/pwm/pwmchip0/pwm0/polarity";
-
 
 char *rctl(const char *path, size_t buf_size);
 int wctl(const char *path, const char *buf, size_t buf_size);
