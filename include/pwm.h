@@ -15,11 +15,29 @@
 #include <stdbool.h>
 #include "errors.h"
 
-pwm_code set_export(bool reserve);
-pwm_code set_enable(bool enable);
-pwm_code set_duty(uint64_t duty);
-pwm_code set_period(uint64_t period);
-pwm_code set_pulse(uint64_t period, uint8_t duty);
+enum pwm_polarity {
+  NORMAL,
+  INVERSE,
+};
+
+enum pwm_channel {
+  PWM0,
+  PWM1,
+};
+
+struct pwm_iface {
+  uint8_t channel;
+  uint64_t duty;
+  uint64_t period;
+  enum pwm_polarity polarity;
+  enum pwm_channel enable;
+}; 
+
 void pwm_init();
+pwm_status pwm_set_export(bool reserve);
+pwm_status pwm_set_enable(bool enable);
+pwm_status pwm_set_duty(uint64_t duty);
+pwm_status pwm_set_period(uint64_t period);
+pwm_status pwm_set_pulse(uint64_t period, uint8_t duty);
 
 #endif  // PWM_H_

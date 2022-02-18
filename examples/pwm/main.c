@@ -11,6 +11,7 @@
 #include <pwm.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <merase.h>
 #include <unistd.h>
 #include <stdint.h>
 
@@ -18,11 +19,11 @@
 
 int shutdown();
 void usage();
-pwm_code set_pulse(uint64_t period, uint8_t duty);
+pwm_status set_pulse(uint64_t period, uint8_t duty);
 
 int shutdown() {
-  set_enable(false);
-  set_export(false);
+  pwm_set_enable(false);
+  pwm_set_export(false);
   return 0;
 }
 
@@ -45,19 +46,19 @@ void usage() {
  * 
  * @param period waveform period in nanoseconds (ie 10,000,000ns -> 10MHz)
  * @param duty positive duty of the waveform as a percentage of the period (ie 50)
- * @return pwm_code 
+ * @return pwm_status 
  */
-pwm_code set_pulse(uint64_t period, uint8_t duty) {
-  pwm_code status;
+pwm_status set_pulse(uint64_t period, uint8_t duty) {
+  pwm_status status;
   if (duty > 100) {
     return PWM_ARG_ERROR;
   }
   uint64_t _duty = period * (int)duty/100;
-  status = set_period(period);
+  status = pwm_set_period(period);
   if (status != 0) {
     return status;
   }
-  status = set_duty(_duty);
+  status = pwm_set_duty(_duty);
   if (status != 0) {
     return status;
   }
@@ -68,16 +69,17 @@ int main(int argc, char *argv[]) {
   int c, status, errflg = 0;
   uint64_t duty = 0;
   uint64_t period = 0;
+  merase_set_level(TRACE);
   while ((c = getopt(argc, argv, OPTSTR)) != -1) {
     switch (c) {
       case 'h':
         usage();
         exit(0);
       case 'd':
-        duty = atoi(optarg);
+        duty = atoll(optarg);
         break;
       case 'p' :
-        period = atoi(optarg);
+        period = atoll(optarg);
         break;
       case ':':
         fprintf(stderr, "-%c without argument\n", optopt);
@@ -99,19 +101,13 @@ int main(int argc, char *argv[]) {
     usage();
     exit(0);
   }
-  printf("Duty: %lld Period: %lld\n", duty, period);
   pwm_init();
-  // set export
-  status = set_export(true);
-  if (status != 0) {
-    shutdown();
-  }
   status = set_pulse(period, duty);
   if (status != 0) {
     shutdown();
   }
   // set enable
-  set_enable(true);
+  pwm_set_enable(true);
   if (status != 0) {
     shutdown();
   }

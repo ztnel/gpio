@@ -16,7 +16,7 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
 # Detect if the project is being build within a project or standalone.
@@ -41,7 +41,7 @@ message(STATUS "Fetching static dependancies")
 FetchContent_Declare(
   merase
   GIT_REPOSITORY https://github.com/ztnel/merase
-  GIT_TAG v0.1.4
+  GIT_TAG v0.1.5
 )
 FetchContent_MakeAvailable(merase)
 

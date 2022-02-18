@@ -16,16 +16,11 @@
 #include <stdio.h>
 #include "errors.h"
 
-// constant path definitions
-static const char EXPORT_PATH[] = "/sys/class/pwm/pwmchip0/export";
-static const char UNEXPORT_PATH[] = "/sys/class/pwm/pwmchip0/unexport";
-static const char PERIOD_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/period";
-static const char DUTY_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/duty_cycle";
-static const char ENABLE_PATH[] = "/sys/class/pwm/pwmchip0/pwm0/enable";
 
-
-int ioctl(const char* path, const char* buf, size_t buf_size);
-char* int64_to_str(uint64_t value, size_t *size);
-void free_buffer(char* buf);
+char *rctl(const char *path, size_t buf_size);
+int wctl(const char *path, const char *buf, size_t buf_size);
+char *int64_to_str(uint64_t value, size_t *size);
+void free_buffer(char *buf);
+FILE *exec_linux_cmd(char *cmd);
 
 #endif  // SYSFS_H_
