@@ -31,7 +31,7 @@ jobs:
           name: libgpio-static.a
           path: ${{github.workspace}}/build/bin/
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
