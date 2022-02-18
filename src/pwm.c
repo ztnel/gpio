@@ -58,7 +58,7 @@ static void _initialize_state() {
 
   buf = rctl(_DUTY_PATH, 8);
   if (buf != NULL) {
-    uint64_t duty = strtoull(buf, &ep, 10);
+    uint64_t duty = strtoul(buf, &ep, 10);
     if (!*ep) {
       pwm.duty = duty;
     }
@@ -67,7 +67,7 @@ static void _initialize_state() {
 
   buf = rctl(_PERIOD_PATH, 8);
   if (buf != NULL) {
-    uint64_t period = strtoull(buf, &ep, 10);
+    uint64_t period = strtoul(buf, &ep, 10);
     if (!*ep) {
       pwm.period = period;
     }

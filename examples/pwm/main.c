@@ -77,10 +77,10 @@ int main(int argc, char *argv[]) {
         usage();
         exit(0);
       case 'd':
-        duty = strtoull(optarg, &ep, 10);
+        duty = strtoul(optarg, &ep, 10);
         break;
       case 'p' :
-        period = strtoull(optarg, &ep, 10);
+        period = strtoul(optarg, &ep, 10);
         break;
       case ':':
         fprintf(stderr, "-%c without argument\n", optopt);

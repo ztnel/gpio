@@ -96,11 +96,11 @@ _cleanup:
  */
 char *int64_to_str(uint64_t value, size_t *size) {
   // get length of string size
-  int len = snprintf(NULL, 0, "%llu", value);
+  int len = snprintf(NULL, 0, "%lu", value);
   // +1 allocation for null terminator '\0'
   *size = (size_t)len + 1;
   char *buf = malloc(*size);
-  snprintf(buf, *size, "%llu", value);
+  snprintf(buf, *size, "%lu", value);
   return buf;
 }
 
