@@ -69,6 +69,8 @@ int main(int argc, char *argv[]) {
   int c, status, errflg = 0;
   uint64_t duty = 0;
   uint64_t period = 0;
+  extern char *optarg;
+  extern int optopt;
   char *ep;
   merase_set_level(TRACE);
   while ((c = getopt(argc, argv, OPTSTR)) != -1) {
