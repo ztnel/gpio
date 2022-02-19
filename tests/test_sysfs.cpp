@@ -51,14 +51,14 @@ class TestSysfs : public testing::Test {
 //   ASSERT_EQ(ret_code, EXIT_FAILURE);
 // }
 
-TEST_F(TestSysfs, wctl_success) {
-  open_fake.return_val = 1;
-  close_fake.return_val = 0;
-  int ret_code = wctl("/", "1", 2);
-  ASSERT_EQ(ret_code, EXIT_SUCCESS);
-  // ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
-  // ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
-}
+// TEST_F(TestSysfs, wctl_success) {
+//   open_fake.return_val = 1;
+//   close_fake.return_val = 0;
+//   int ret_code = wctl("/", "1", 2);
+//   ASSERT_EQ(ret_code, EXIT_SUCCESS);
+//   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
+//   ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
+// }
 
 // TEST_F(TestSysfs, wctl_open_failure) {
 //   open_fake.return_val = -1;
