@@ -36,6 +36,8 @@ void usage() {
 int main(int argc, char *argv[]) {
   int c, status, errflg = 0;
   char *cmd = NULL;
+  extern char *optarg;
+  extern int optopt;
   merase_set_level(TRACE);
   while ((c = getopt(argc, argv, OPTSTR)) != -1) {
     switch (c) {
@@ -70,7 +72,5 @@ int main(int argc, char *argv[]) {
   while (fgets(output, sizeof(output), fp) != NULL) {
     printf("%s", output);
   }
-  char *duty = rctl("/sys/class/pwm/pwmchip0/pwm0/duty_cycle", 8);
-  info("Duty Cycle: %s", duty);
   return 0;
 }
