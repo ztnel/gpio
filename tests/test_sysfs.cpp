@@ -69,7 +69,7 @@ TEST_F(TestSysfs, rctl_open_success) {
   fopen_fake.return_val = fp;
   char *buf = rctl(".", size);
   // an incorrect mode will  cause segfault @ write instruction
-  EXPECT_EQ(strcmp(fopen_fake.arg1_val, "r"), 0);
+  // ASSERT_EQ(strcmp(fopen_fake.arg1_val, "r"), 0);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
   ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
   ASSERT_EQ(fclose_fake.call_count, 1);
@@ -122,7 +122,7 @@ TEST_F(TestSysfs, exec_linux_cmd_success) {
   popen_fake.return_val = NULL;
   char cmd[] = "test";
   FILE *buf = exec_linux_cmd(cmd);
-  EXPECT_EQ(strcmp(popen_fake.arg1_val, "r"), 0);
+  ASSERT_EQ(strcmp(popen_fake.arg1_val, "r"), 0);
   EXPECT_TRUE(buf == NULL);
 }
 }
