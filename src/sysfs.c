@@ -67,7 +67,7 @@ int wctl(const char *path, const char *buf, size_t buf_size) {
   trace("Opening path %s for write of %x with size %i", path, buf, buf_size);
   pthread_mutex_lock(&s_mtx);
   // open path for write only
-  FILE *fp = fopen(path, "r");
+  FILE *fp = fopen(path, "w");
   if (fp == NULL) {
     error("Error while opening %s", path);
     status = EXIT_FAILURE;
