@@ -45,6 +45,34 @@ class TestSysfs : public testing::Test {
     }
 };
 
+TEST_F(TestSysfs, rctl_bad_args) {
+  char *buf = rctl(NULL, 1);
+  EXPECT_TRUE(buf == NULL);
+}
+
+TEST_F(TestSysfs, rctl_open_failure) {
+  fopen_fake.return_val = NULL;
+  char *buf = rctl(".", 1);
+  ASSERT_EQ(fgets_fake.call_count, 0);
+  ASSERT_EQ(fclose_fake.call_count, 1);
+  ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
+  ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
+  free_buffer(buf);
+}
+
+TEST_F(TestSysfs, rctl_open_success) {
+  FILE* fp;
+  int size = 2;
+  fopen_fake.return_val = fp;
+  char *buf = rctl(".", size);
+  // an incorrect mode will  cause segfault @ write instruction
+  EXPECT_EQ(strcmp(fopen_fake.arg1_val, "r"), 0);
+  ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
+  ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
+  ASSERT_EQ(fclose_fake.call_count, 1);
+  free_buffer(buf);
+}
+
 TEST_F(TestSysfs, wctl_bad_args) {
   int ret_code;
   ret_code = wctl(NULL, "1", 2);
@@ -61,6 +89,8 @@ TEST_F(TestSysfs, wctl_success) {
   fopen_fake.return_val = fp;
   int ret_code = wctl(".", "1", 2);
   ASSERT_EQ(ret_code, EXIT_SUCCESS);
+  // an incorrect mode will  cause segfault @ write instruction
+  EXPECT_EQ(strcmp(fopen_fake.arg1_val, "w"), 0);
   ASSERT_EQ(fputs_fake.call_count, 1);
   ASSERT_EQ(fclose_fake.call_count, 1);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
@@ -93,28 +123,3 @@ TEST_F(TestSysfs, exec_linux_cmd_success) {
   EXPECT_TRUE(buf == NULL);
 }
 
-TEST_F(TestSysfs, rctl_bad_args) {
-  char *buf = rctl(NULL, 1);
-  EXPECT_TRUE(buf == NULL);
-}
-
-TEST_F(TestSysfs, rctl_open_failure) {
-  fopen_fake.return_val = NULL;
-  char *buf = rctl(".", 1);
-  ASSERT_EQ(fgets_fake.call_count, 0);
-  ASSERT_EQ(fclose_fake.call_count, 1);
-  ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
-  ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
-  free_buffer(buf);
-}
-
-TEST_F(TestSysfs, rctl_open_success) {
-  FILE* fp;
-  int size = 2;
-  fopen_fake.return_val = fp;
-  char *buf = rctl(".", size);
-  ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
-  ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
-  ASSERT_EQ(fclose_fake.call_count, 1);
-  free_buffer(buf);
-}
