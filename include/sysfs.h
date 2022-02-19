@@ -17,7 +17,7 @@
 #include "errors.h"
 
 
-char *rctl(const char *path, size_t buf_size);
+char *rctl(const char *path, int buf_size);
 int wctl(const char *path, const char *buf, size_t buf_size);
 char *int64_to_str(uint64_t value, size_t *size);
 void free_buffer(char *buf);

@@ -28,23 +28,24 @@ static pthread_mutex_t s_mtx;
  * @param size read bytes
  * @return char* 
  */
-char *rctl(const char *path, size_t size) {
+char *rctl(const char *path, int size) {
   if (path == NULL) {
     error("Path cannot be null");
     return NULL;
   }
-  char *buf = (char *)malloc(size);
+  char *buf = (char *)malloc((size_t)size);
   trace("Opening path %s for read", path);
   pthread_mutex_lock(&s_mtx);
-  int fd = open(path, O_RDONLY);
-  if (fd < 0) {
+  FILE *fp = fopen(path, "r");
+  if (fp == NULL) {
     error("Error while opening %s", path);
     goto _cleanup;
   }
-  ssize_t sz = read(fd, buf, size);
-  info("Successful read of %d bytes: %s", sz, buf);
+  fgets(buf, size, fp);
+  info("Successful read bytes: %s", buf);
 
 _cleanup:
+  fclose(fp);
   pthread_mutex_unlock(&s_mtx);
   return buf;
 }
@@ -66,23 +67,19 @@ int wctl(const char *path, const char *buf, size_t buf_size) {
   trace("Opening path %s for write of %x with size %i", path, buf, buf_size);
   pthread_mutex_lock(&s_mtx);
   // open path for write only
-  int fd = open(path, O_WRONLY);
-  if (fd < 0) {
+  FILE *fp = fopen(path, "r");
+  if (fp == NULL) {
     error("Error while opening %s", path);
     status = EXIT_FAILURE;
     goto _cleanup;
   }
   // write buffer
-  write(fd, buf, buf_size);
-  if (close(fd) == -1) {
-    error("Error when closing file: %d", fd);
-    status = EXIT_FAILURE;
-    goto _cleanup;
-  }
+  fputs(buf, fp);
   info("Successful write of %d bytes: %s", buf_size, buf);
   status = EXIT_SUCCESS;
 
 _cleanup:
+  fclose(fp);
   pthread_mutex_unlock(&s_mtx);
   return status;
 }
