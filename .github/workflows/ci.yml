@@ -51,8 +51,8 @@ jobs:
         uses: actions/upload-artifact@v2
         if: failure()
         with:
-          name: results_xml
-          path: ${{github.workspace}}/build/results/**/*.xml
+          name: last-failure.log 
+          path: ${{github.workspace}}/build/Testing/Temporary/LastTest.log
       - name: gcov
         working-directory: build
         run: make cov
