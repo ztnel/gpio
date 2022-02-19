@@ -77,8 +77,8 @@ TEST_F(TestSysfs, wctl_close_failure) {
 }
 
 TEST_F(TestSysfs, Int64toStr) {
-//   size_t size;
-//   uint64_t value = 64;
+  size_t size;
+  uint64_t value = 64;
   char *buf = int64_to_str(value, &size);
 //   ASSERT_EQ(strcmp(buf, "64"), 0);
 //   free_buffer(buf);
