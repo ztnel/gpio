@@ -30,17 +30,20 @@ FAKE_VALUE_FUNC2(FILE *, popen, const char *, const char *);
 FAKE_VALUE_FUNC1(int, pthread_mutex_lock, pthread_mutex_t *);
 FAKE_VALUE_FUNC1(int, pthread_mutex_unlock, pthread_mutex_t *);
 
+#define FFF_FAKES_LIST(FAKE)  \
+  FAKE(merase_log)            \
+  FAKE(fclose)                \
+  FAKE(fgets)                 \
+  FAKE(fputs)                 \
+  FAKE(fopen)                 \
+  FAKE(pthread_mutex_lock)    \
+  FAKE(pthread_mutex_unlock)
 
+namespace {
 class TestSysfs : public testing::Test {
-  public:
-    void SetUp() {
-      RESET_FAKE(popen);
-      RESET_FAKE(fgets);
-      RESET_FAKE(fclose);
-      RESET_FAKE(fputs);
-      RESET_FAKE(fopen);
-      RESET_FAKE(pthread_mutex_lock);
-      RESET_FAKE(pthread_mutex_unlock);
+  protected:
+    void SetUp() override {
+      FFF_FAKES_LIST(RESET_FAKE);
       FFF_RESET_HISTORY();
     }
 };
@@ -122,4 +125,4 @@ TEST_F(TestSysfs, exec_linux_cmd_success) {
   EXPECT_EQ(strcmp(popen_fake.arg1_val, "r"), 0);
   EXPECT_TRUE(buf == NULL);
 }
-
+}

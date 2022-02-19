@@ -9,8 +9,6 @@
  * 
  */
 
-
-
 #include <fff.h>
 #include <gtest/gtest.h>
 
@@ -27,13 +25,18 @@ FAKE_VALUE_FUNC2(char *, int64_to_str, uint64_t, size_t *);
 FAKE_VOID_FUNC1(free_buffer, char*);
 FAKE_VOID_FUNC_VARARG(merase_log, enum Level, const char *, int, const char *, ...);
 
+#define FFF_FAKES_LIST(FAKE)  \
+  FAKE(wctl)                  \
+  FAKE(rctl)                  \
+  FAKE(int64_to_str)          \
+  FAKE(free_buffer)           \
+  FAKE(merase_log)
+
+namespace {
 class TestPwm : public testing::Test {
-  public:
-    void SetUp() {
-      RESET_FAKE(wctl);
-      RESET_FAKE(rctl);
-      RESET_FAKE(int64_to_str);
-      RESET_FAKE(free_buffer);
+  protected:
+    void SetUp() override {
+      FFF_FAKES_LIST(RESET_FAKE);
       FFF_RESET_HISTORY();
     }
 };
@@ -85,4 +88,5 @@ TEST_F(TestPwm, pwm_init) {
   pwm_init();
   ASSERT_EQ(wctl_fake.call_count, 1);
   ASSERT_EQ(rctl_fake.call_count, 4);
+}
 }
