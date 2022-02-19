@@ -96,11 +96,11 @@ _cleanup:
  */
 char *int64_to_str(uint64_t value, size_t *size) {
   // get length of string size
-  int len = snprintf(NULL, 0, "%lu", value);
+  int len = snprintf(NULL, 0, "%llu", value);
   // +1 allocation for null terminator '\0'
   *size = (size_t)len + 1;
   char *buf = malloc(*size);
-  snprintf(buf, *size, "%lu", value);
+  snprintf(buf, *size, "%llu", value);
   return buf;
 }
 
@@ -118,13 +118,8 @@ void free_buffer(char *buf) {
  * @brief Execute linux command and capture output
  * 
  * @param cmd 
- * @return char* 
+ * @return FILE * 
  */
 FILE *exec_linux_cmd(char *cmd) {
-  FILE *fp = popen(cmd, "r");
-  if (fp == NULL) {
-    error("Command %s failed to execute", cmd);
-    exit(EXIT_FAILURE);
-  }
-  return fp;
+  return popen(cmd, "r");
 }
