@@ -20,7 +20,7 @@ extern "C" {
   #include "sysfs.h"
 }
 
-// DEFINE_FFF_GLOBALS;
+DEFINE_FFF_GLOBALS;
 // FAKE_VALUE_FUNC1(int, close, int);
 // FAKE_VALUE_FUNC3(ssize_t, write, int, const void *, size_t);
 // FAKE_VALUE_FUNC_VARARG(int, open, const char *, int, ...);
@@ -37,7 +37,7 @@ class TestSysfs : public testing::Test {
       // RESET_FAKE(open);
       // RESET_FAKE(pthread_mutex_lock);
       // RESET_FAKE(pthread_mutex_unlock);
-      // FFF_RESET_HISTORY();
+      FFF_RESET_HISTORY();
     }
 };
 
