@@ -41,15 +41,15 @@ class TestSysfs : public testing::Test {
     }
 };
 
-TEST_F(TestSysfs, wctl_bad_args) {
-  int ret_code;
-  ret_code = wctl(NULL, "1", 2);
-  ASSERT_EQ(ret_code, EXIT_FAILURE);
-  ret_code = wctl("/", NULL, 2);
-  ASSERT_EQ(ret_code, EXIT_FAILURE);
-  ret_code = wctl("/", "1", 0);
-  ASSERT_EQ(ret_code, EXIT_FAILURE);
-}
+// TEST_F(TestSysfs, wctl_bad_args) {
+//   int ret_code;
+//   ret_code = wctl(NULL, "1", 2);
+//   ASSERT_EQ(ret_code, EXIT_FAILURE);
+//   ret_code = wctl("/", NULL, 2);
+//   ASSERT_EQ(ret_code, EXIT_FAILURE);
+//   ret_code = wctl("/", "1", 0);
+//   ASSERT_EQ(ret_code, EXIT_FAILURE);
+// }
 
 // TEST_F(TestSysfs, wctl_success) {
 //   open_fake.return_val = 1;
