@@ -64,6 +64,7 @@ TEST_F(TestSysfs, wctl_success) {
   fopen_fake.return_val = fp;
   int ret_code = wctl(".", "1", 2);
   ASSERT_EQ(ret_code, EXIT_SUCCESS);
+  ASSERT_EQ(strcmp(fopen_fake.arg1_val, "w"), 0);
   ASSERT_EQ(fputs_fake.call_count, 1);
   ASSERT_EQ(fclose_fake.call_count, 1);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
@@ -116,6 +117,7 @@ TEST_F(TestSysfs, rctl_open_success) {
   int size = 2;
   fopen_fake.return_val = fp;
   char *buf = rctl(".", size);
+  ASSERT_EQ(strcmp(fopen_fake.arg1_val, "r"), 0);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
   ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
   ASSERT_EQ(fclose_fake.call_count, 1);
