@@ -45,9 +45,9 @@ TEST_F(TestSysfs, wctl_bad_args) {
   int ret_code;
   ret_code = wctl(NULL, "1", 2);
 //   ASSERT_EQ(ret_code, EXIT_FAILURE);
-//   ret_code = wctl("/", NULL, 2);
+  ret_code = wctl("/", NULL, 2);
 //   ASSERT_EQ(ret_code, EXIT_FAILURE);
-//   ret_code = wctl("/", "1", 0);
+  ret_code = wctl("/", "1", 0);
 //   ASSERT_EQ(ret_code, EXIT_FAILURE);
 }
 
