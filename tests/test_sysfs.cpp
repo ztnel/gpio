@@ -93,7 +93,7 @@ TEST_F(TestSysfs, wctl_success) {
   int ret_code = wctl(".", "1", 2);
   ASSERT_EQ(ret_code, EXIT_SUCCESS);
   // an incorrect mode will  cause segfault @ write instruction
-  EXPECT_EQ(strcmp(fopen_fake.arg1_val, "w"), 0);
+  ASSERT_EQ(strcmp(fopen_fake.arg1_val, "w"), 0);
   ASSERT_EQ(fputs_fake.call_count, 1);
   ASSERT_EQ(fclose_fake.call_count, 1);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);

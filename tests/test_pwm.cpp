@@ -14,6 +14,7 @@
 
 extern "C" {
   #include <merase.h>
+  #include <stdint.h>
   #include "pwm.h"
   #include "sysfs.h"
 }
