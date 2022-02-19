@@ -18,12 +18,12 @@ extern "C" {
   #include <merase.h>
   #include <pthread.h>
   #include "sysfs.h"
+  FAKE_VALUE_FUNC_VARARG(int, open, const char *, int, ...);
 }
 
 DEFINE_FFF_GLOBALS;
 FAKE_VALUE_FUNC1(int, close, int);
 FAKE_VALUE_FUNC3(ssize_t, write, int, const void *, size_t);
-FAKE_VALUE_FUNC_VARARG(int, open, const char *, int, ...);
 FAKE_VOID_FUNC_VARARG(merase_log, enum Level, const char *, int, const char *, ...);
 FAKE_VALUE_FUNC1(int, pthread_mutex_lock, pthread_mutex_t *);
 FAKE_VALUE_FUNC1(int, pthread_mutex_unlock, pthread_mutex_t *);
@@ -34,7 +34,7 @@ class TestSysfs : public testing::Test {
     void SetUp() {
       RESET_FAKE(write);
       RESET_FAKE(close);
-      // RESET_FAKE(open);
+      RESET_FAKE(open);
       RESET_FAKE(pthread_mutex_lock);
       RESET_FAKE(pthread_mutex_unlock);
       FFF_RESET_HISTORY();
@@ -52,7 +52,7 @@ TEST_F(TestSysfs, wctl_bad_args) {
 }
 
 TEST_F(TestSysfs, wctl_success) {
-  // open_fake.return_val = 1;
+  open_fake.return_val = 1;
   close_fake.return_val = 0;
   int ret_code = wctl("/", "1", 2);
   ASSERT_EQ(ret_code, EXIT_SUCCESS);
@@ -61,7 +61,7 @@ TEST_F(TestSysfs, wctl_success) {
 }
 
 TEST_F(TestSysfs, wctl_open_failure) {
-  // open_fake.return_val = -1;
+  open_fake.return_val = -1;
   int ret_code = wctl("/", "1", 2);
   ASSERT_EQ(ret_code, EXIT_FAILURE);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
