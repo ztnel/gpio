@@ -32,11 +32,11 @@ FAKE_VALUE_FUNC1(int, pthread_mutex_unlock, pthread_mutex_t *);
 class TestSysfs : public testing::Test {
   public:
     void SetUp() {
-      RESET_FAKE(write);
-      RESET_FAKE(close);
-      RESET_FAKE(open);
-      RESET_FAKE(pthread_mutex_lock);
-      RESET_FAKE(pthread_mutex_unlock);
+      // RESET_FAKE(write);
+      // RESET_FAKE(close);
+      // RESET_FAKE(open);
+      // RESET_FAKE(pthread_mutex_lock);
+      // RESET_FAKE(pthread_mutex_unlock);
       FFF_RESET_HISTORY();
     }
 };
