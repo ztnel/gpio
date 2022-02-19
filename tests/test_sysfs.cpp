@@ -33,7 +33,7 @@ class TestSysfs : public testing::Test {
   public:
     void SetUp() {
       // RESET_FAKE(write);
-      // RESET_FAKE(close);
+      RESET_FAKE(close);
       // RESET_FAKE(open);
       RESET_FAKE(pthread_mutex_lock);
       RESET_FAKE(pthread_mutex_unlock);
@@ -53,7 +53,7 @@ TEST_F(TestSysfs, wctl_bad_args) {
 
 TEST_F(TestSysfs, wctl_success) {
 //   open_fake.return_val = 1;
-//   close_fake.return_val = 0;
+  close_fake.return_val = 0;
   int ret_code = wctl("/", "1", 2);
   // ASSERT_EQ(ret_code, EXIT_SUCCESS);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
@@ -69,9 +69,9 @@ TEST_F(TestSysfs, wctl_open_failure) {
 }
 
 TEST_F(TestSysfs, wctl_close_failure) {
-//   close_fake.return_val = -1;
+  close_fake.return_val = -1;
   int ret_code = wctl("/", "1", 2);
-//   ASSERT_EQ(ret_code, 1);
+  ASSERT_EQ(ret_code, 1);
   ASSERT_EQ(pthread_mutex_lock_fake.call_count, 1);
   ASSERT_EQ(pthread_mutex_unlock_fake.call_count, 1);
 }
