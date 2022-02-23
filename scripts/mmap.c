@@ -7,26 +7,22 @@
 #include <errno.h>
 #include <string.h>
 
+#define GPIO_PERI_BASE_NEW 0x3F000000
+
+static volatile uint32_t gpio_base = GPIO_PERI_BASE_NEW;
+
 int main(int argc, char** argv) {
-  uint32_t *bcm2835_peripherals_base = 0x20000000;  
-  FILE *fp;
-  if ((fp = fopen("/proc/device-tree/soc/ranges" , "rb"))) {
-    unsigned char buf[8];
-    if (fread(buf, 1, sizeof(buf), fp) == sizeof(buf))
-      bcm2835_peripherals_base = (uint32_t *)(
-        buf[4] << 24 |
-        buf[5] << 16 | 
-        buf[6] << 8  | 
-        buf[7] << 0);
-    fclose(fp);
-  }
-  printf("Peripherals base: %lu\n", bcm2835_peripherals_base);
-
-
   // open /dev/mem device for read write. O_SYNC is to make the call blocking
-  int memfd = open("/dev/mem", O_RDWR | O_SYNC);
+  int memfd = open("/dev/mem", O_RDWR | O_SYNC | __O_CLOEXEC);
+  if (memfd < 0) {
+    memfd = open("/dev/gpiomem", O_RDWR | O_SYNC | __O_CLOEXEC);
+    if (memfd >= 0)
+      gpio_base = 0;
+    else
+      return EXIT_FAILURE;
+  }
   // create a userspace memory map for accessing gpio registers in progmem
-  uint32_t *map = (uint32_t *)mmap(NULL, 4*1024, (PROT_READ | PROT_WRITE), MAP_SHARED, memfd, 0x3f200000);
+  uint32_t *map = (uint32_t *)mmap(NULL, 4*1024, (PROT_READ | PROT_WRITE), MAP_SHARED, memfd, gpio_base);
   if (map == MAP_FAILED)
     printf("bcm2835_init: mmap failed: %s\n", strerror(errno));    
   // close the memory file
