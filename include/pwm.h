@@ -47,6 +47,11 @@
 #define PWM_EMPT1(x)      ((x) << 1)        // fifo empty flag
 #define PWM_FULL1(x)      ((x) << 0)        // fifo full flag
 
+// dma configuration register bits
+#define PWM_DMAEN(x)      ((x) << 31)       // dma enable
+#define PWM_PANIC(x)      ((x) << 8)        // dma threshold for PANIC signal
+#define PWM_DREQ(x)       ((x) << 0)        // dma threshold for dreq signal
+
 typedef struct pwm_t {
   uint32_t ctl;       // control register
   uint32_t sta;       // status register
