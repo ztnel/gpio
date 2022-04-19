@@ -1,7 +1,7 @@
 /**
  * @file pwm.h
  * @author ztnel (christian.sargusingh@gbatteries.com)
- * @brief 
+ * @brief BCM2711 linux pwm driver headers
  * @version 0.1
  * @date 2022-01
  * 
@@ -14,7 +14,7 @@
 
 #include <stdint.h>
 #include "mem.h"
-#include "errors.h"
+
 
 #define PWM0_BASE        (MEM_BCM2711_BASE + 0x0020c000)
 #define PWM1_BASE        (MEM_BCM2711_BASE + 0x0020c800)
@@ -52,6 +52,15 @@
 #define PWM_PANIC(x)      ((x) << 8)        // dma threshold for PANIC signal
 #define PWM_DREQ(x)       ((x) << 0)        // dma threshold for dreq signal
 
+/**
+ * @brief PWM Error codes
+ * 
+ */
+typedef uint8_t pwm_err_t;
+
+#define PWM_SUCCESS       (pwm_err_t) 0
+#define PWM_FAILURE       (pwm_err_t) 1
+
 typedef struct pwm_t {
   uint32_t ctl;       // control register
   uint32_t sta;       // status register
@@ -64,5 +73,7 @@ typedef struct pwm_t {
   uint32_t rng2;      // pwm channel 2 range
   uint32_t dat2;      // pwm channel 2 data
 } pwm_t;
+
+pwm_err_t pwm_init();
 
 #endif  // PWM_H_
